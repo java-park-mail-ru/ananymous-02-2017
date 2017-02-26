@@ -7,16 +7,15 @@ import models.User;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import responses.ErrorResponse;
 import responses.UserResponse;
 import services.AccountService;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 public class UserController {
@@ -26,6 +25,12 @@ public class UserController {
     public UserController(@NotNull AccountService accountService)
     {
         this.accountService = accountService;
+    }
+
+    @RequestMapping("/greeting")
+    public String greeting(@RequestParam(value="name", defaultValue="World") String name)
+    {
+        return name;
     }
 
     @RequestMapping(path = "/api/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
