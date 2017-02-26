@@ -1,4 +1,6 @@
 
 /target/
+/build/
+*.class
 /.idea/
-/Lesson1.iml
+*.iml
