@@ -1,0 +1,20 @@
+language: java
+sudo: required
+java:
+- '1.8'
+branches:
+  only:
+  - develop
+deploy:
+  provider: heroku
+  api_key:
+    secure: 0947f07a-43d3-472a-ad0c-1bd3030ed741
+  app: ananymous
+  on:
+    repo: Chocco-Crokko/ananymous-02-2017
+    branch: develop
+  skip_cleanup: true
+script:
+  - java -jar ./target/Ananymous-1.0-SNAPSHOT.jar
+install:
+  - mvn clean install
