@@ -11,14 +11,14 @@ public class User {
 
     public User() {}
 
-    @JsonCreator
-    public User(@JsonProperty("login") String login,
-                @JsonProperty("email") String email,
-                @JsonProperty("password") String password) {
-        this.login = login;
-        this.email = email;
-        this.password = password;
-    }
+//    @JsonCreator
+//    public User(@JsonProperty("login") String login,
+//                @JsonProperty("email") String email,
+//                @JsonProperty("password") String password) {
+//        this.login = login;
+//        this.email = email;
+//        this.password = password;
+//    }
 
     public void setLogin(String login) {
         this.login = login;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import exceptions.RequestException;
 import models.User;
-import org.jetbrains.annotations.NotNull;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +16,7 @@ import responses.UserResponse;
 import services.AccountService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
 
 @RestController
 public class UserController {
