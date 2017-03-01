@@ -46,8 +46,8 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
-    @RequestMapping(path = "/api/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity login(@RequestBody User body, HttpSession httpSession)
+    @RequestMapping(path = "/api/signin", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    public ResponseEntity signin(@RequestBody User body, HttpSession httpSession)
     {
         if (getUserID(httpSession) != null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("User logged in this session"));
@@ -91,7 +91,7 @@ public class UserController {
     public ResponseEntity logout(HttpSession httpSession)
     {
         if (getUserID(httpSession) == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("User logged out"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("User logged out"));
         }
         httpSession.removeAttribute(httpSession.getId());
         return ResponseEntity.ok(null);
@@ -100,6 +100,9 @@ public class UserController {
     private User getUserFromDB(HttpSession httpSession) throws RequestException
     {
         String userID = getUserID(httpSession);
+        if (userID == null) {
+            throw new RequestException(HttpStatus.UNAUTHORIZED, "User logged out");
+        }
         return accountService.getUser(userID);
     }
 
