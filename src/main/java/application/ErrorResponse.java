@@ -1,4 +1,4 @@
-package responses;
+package application;
 
 public class ErrorResponse {
     private final String message;

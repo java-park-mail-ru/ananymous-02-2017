@@ -1,8 +1,8 @@
-package services;
+package application;
 
-import exceptions.RequestException;
-import models.User;
-import models.UserProfile;
+import application.RequestException;
+import application.User;
+import application.UserProfile;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
