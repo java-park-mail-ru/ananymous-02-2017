@@ -1,8 +1,5 @@
-package services;
+package application;
 
-import exceptions.RequestException;
-import models.User;
-import models.UserProfile;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-public class AccountService {
+public class AccountService{
 
     private Map<String, UserProfile> DB = new HashMap<>();
     private final AtomicLong ID_GEN = new AtomicLong(0);

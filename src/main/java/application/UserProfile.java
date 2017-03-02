@@ -1,5 +1,7 @@
-package models;
+package application;
 
+
+import application.User;
 
 import javax.validation.constraints.NotNull;
 

@@ -1,15 +1,10 @@
-package controllers;
+package application;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import exceptions.RequestException;
-import models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import responses.ErrorResponse;
-import responses.UserResponse;
-import services.AccountService;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -24,11 +19,11 @@ public class UserController {
         this.accountService = accountService;
     }
 
-    @RequestMapping("/greeting")
-    public String greeting(@RequestParam(value="name", defaultValue="World") String name)
-    {
-        return name;
-    }
+//    @RequestMapping("/greeting")
+//    public String greeting(@RequestParam(value="name", defaultValue="World") String name)
+//    {
+//        return name;
+//    }
 
     @RequestMapping(path = "/api/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity signup(@RequestBody User body, HttpSession httpSession)
@@ -36,14 +31,12 @@ public class UserController {
         if (getUserID(httpSession) != null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("User logged in this session"));
         }
-//        UserProfile userProfile;
         try {
-            /*userProfile = */accountService.signup(body);
+            accountService.signup(body);
         } catch (RequestException e) {
             return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getMessage()));
         }
-//        httpSession.setAttribute(SESSION_ID, userProfile.getId());
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("Success");
     }
 
     @RequestMapping(path = "/api/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
@@ -59,7 +52,7 @@ public class UserController {
             return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getMessage()));
         }
         httpSession.setAttribute(httpSession.getId(), userID);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("Success");
     }
 
     @RequestMapping(path = "/api/user", method = RequestMethod.GET, produces = "application/json")
@@ -84,7 +77,7 @@ public class UserController {
         } catch (RequestException e) {
             return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getMessage()));
         }
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("Success");
     }
 
     @RequestMapping(path = "/api/logout", method = RequestMethod.POST, produces = "application/json")
@@ -94,7 +87,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("User logged out"));
         }
         httpSession.removeAttribute(httpSession.getId());
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("Success");
     }
 
     private User getUserFromDB(HttpSession httpSession) throws RequestException
