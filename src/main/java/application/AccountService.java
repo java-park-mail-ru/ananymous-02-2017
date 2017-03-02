@@ -57,7 +57,7 @@ public class AccountService{
             throws RequestException
     {
         if (!user.getPassword().equals(password)) {
-            throw new RequestException(HttpStatus.UNAUTHORIZED, "Wrong login and password");
+            throw new RequestException(HttpStatus.FORBIDDEN, "Wrong login or password");
         }
     }
 
