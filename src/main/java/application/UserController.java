@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
 @RestController
+@CrossOrigin(origins = {"http://hunt-develop.herokuapp.com/", "http://localhost"})
 public class UserController {
     @NotNull
     private final AccountService accountService;
@@ -19,11 +20,11 @@ public class UserController {
         this.accountService = accountService;
     }
 
-//    @RequestMapping("/greeting")
-//    public String greeting(@RequestParam(value="name", defaultValue="World") String name)
-//    {
-//        return name;
-//    }
+    @RequestMapping("/")
+    public String greeting(@RequestParam(value="name", defaultValue="World") String name)
+    {
+        return name;
+    }
 
     @RequestMapping(path = "/api/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity signup(@RequestBody User body, HttpSession httpSession)
