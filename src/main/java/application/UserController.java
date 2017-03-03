@@ -1,7 +1,5 @@
 package application;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +18,13 @@ public class UserController {
         this.accountService = accountService;
     }
 
-    @RequestMapping("/")
-    public String greeting(@RequestParam(value="name", defaultValue="World") String name)
+    @GetMapping("/api/status")
+    public ResponseEntity status()
     {
-        return name;
+        return ResponseEntity.ok(new StatusRequest("OK"));
     }
 
-    @RequestMapping(path = "/api/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/api/signup", produces = "application/json", consumes = "application/json")
     public ResponseEntity signup(@RequestBody User body, HttpSession httpSession)
     {
         if (getUserID(httpSession) != null) {
@@ -40,7 +38,7 @@ public class UserController {
         return ResponseEntity.ok("Success");
     }
 
-    @RequestMapping(path = "/api/signin", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/api/signin", produces = "application/json", consumes = "application/json")
     public ResponseEntity signin(@RequestBody User body, HttpSession httpSession)
     {
         if (getUserID(httpSession) != null) {
@@ -56,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok("Success");
     }
 
-    @RequestMapping(path = "/api/user", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(path = "/api/user", produces = "application/json")
     public ResponseEntity getUser(HttpSession httpSession)
     {
         User user;
@@ -68,7 +66,7 @@ public class UserController {
         return ResponseEntity.ok(new UserResponse(user.getLogin(), user.getEmail()));
     }
 
-    @RequestMapping(path = "/api/change-pass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/api/change-pass", produces = "application/json", consumes = "application/json")
     public ResponseEntity changePassword(@RequestBody GetPasswordRequest body, HttpSession httpSession)
     {
         User user;
@@ -81,7 +79,7 @@ public class UserController {
         return ResponseEntity.ok("Success");
     }
 
-    @RequestMapping(path = "/api/logout", method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(path = "/api/logout", produces = "application/json")
     public ResponseEntity logout(HttpSession httpSession)
     {
         if (getUserID(httpSession) == null) {
@@ -105,27 +103,5 @@ public class UserController {
         return (String) httpSession.getAttribute(httpSession.getId());
     }
 
-    private static final class GetPasswordRequest
-    {
-        private String oldPassword, newPassword;
-
-        @JsonCreator
-        public GetPasswordRequest(@JsonProperty("oldPassword") String oldPassword,
-                                  @JsonProperty("newPassword") String newPassword)
-        {
-            this.oldPassword = oldPassword;
-            this.newPassword = newPassword;
-        }
-
-        public String getOldPassword()
-        {
-            return oldPassword;
-        }
-
-        public String getNewPassword()
-        {
-            return newPassword;
-        }
-    }
 
 }
