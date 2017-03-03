@@ -3,12 +3,12 @@ package application;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GetPasswordRequest {
+public class PasswordRequest {
   private String oldPassword, newPassword;
 
   @JsonCreator
-  public GetPasswordRequest(@JsonProperty("oldPassword") String oldPassword,
-                            @JsonProperty("newPassword") String newPassword)
+  public PasswordRequest(@JsonProperty("oldPassword") String oldPassword,
+                         @JsonProperty("newPassword") String newPassword)
   {
     this.oldPassword = oldPassword;
     this.newPassword = newPassword;

@@ -1,9 +1,9 @@
 package application;
 
-public class StatusRequest {
+public class StatusResponse {
   private String status;
 
-  public StatusRequest(String status) {
+  public StatusResponse(String status) {
     this.status = status;
   }
 

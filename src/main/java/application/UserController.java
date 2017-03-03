@@ -21,7 +21,7 @@ public class UserController {
     @GetMapping("/api/status")
     public ResponseEntity status()
     {
-        return ResponseEntity.ok(new StatusRequest("OK"));
+        return ResponseEntity.ok(new StatusResponse("OK"));
     }
 
     @PostMapping(path = "/api/signup", produces = "application/json", consumes = "application/json")
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/api/change-pass", produces = "application/json", consumes = "application/json")
-    public ResponseEntity changePassword(@RequestBody GetPasswordRequest body, HttpSession httpSession)
+    public ResponseEntity changePassword(@RequestBody PasswordRequest body, HttpSession httpSession)
     {
         User user;
         try {
