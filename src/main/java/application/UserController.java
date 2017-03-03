@@ -8,7 +8,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@CrossOrigin(origins = {"http://hunt-develop.herokuapp.com/", "http://localhost"})
+@CrossOrigin
 public class UserController {
     @NotNull
     private final AccountService accountService;
