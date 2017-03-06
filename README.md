@@ -8,12 +8,13 @@
 ---
 # API  
 ### Sign up  
-**/api/signup**  
-POST  
-**Request**  
+```http
+POST /api/signup
+# Request
 { "login":"...", "email":"...", "password":"..."}  
-**Response**  
+# Response
 ""  
+```
 **Коды возврата**  
 * 200 - ОК
 * 409 - пользователь уже зарегистрирован
