@@ -1,4 +1,4 @@
-package responses;
+package application.responses;
 
 public class UserResponse {
     private String login;

@@ -1,18 +1,18 @@
-package services;
+package application.services;
 
-import exceptions.RequestException;
-import models.User;
-import models.UserProfile;
-import org.jetbrains.annotations.NotNull;
+import application.models.User;
+import application.models.UserProfile;
+import application.exceptions.RequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-public class AccountService {
+public class AccountService{
 
     private Map<String, UserProfile> DB = new HashMap<>();
     private final AtomicLong ID_GEN = new AtomicLong(0);
@@ -60,7 +60,7 @@ public class AccountService {
             throws RequestException
     {
         if (!user.getPassword().equals(password)) {
-            throw new RequestException(HttpStatus.UNAUTHORIZED, "Wrong login and password");
+            throw new RequestException(HttpStatus.FORBIDDEN, "Wrong login or password");
         }
     }
 

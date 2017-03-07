@@ -1,6 +1,7 @@
-package models;
+package application.models;
 
-import org.jetbrains.annotations.NotNull;
+
+import javax.validation.constraints.NotNull;
 
 public class UserProfile {
     private long id;
