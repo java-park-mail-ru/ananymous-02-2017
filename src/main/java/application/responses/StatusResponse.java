@@ -1,4 +1,4 @@
-package application;
+package application.responses;
 
 public class StatusResponse {
   private String status;

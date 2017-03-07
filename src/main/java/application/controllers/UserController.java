@@ -1,5 +1,12 @@
-package application;
+package application.controllers;
 
+import application.services.AccountService;
+import application.requests.PasswordRequest;
+import application.exceptions.RequestException;
+import application.models.User;
+import application.responses.ErrorResponse;
+import application.responses.StatusResponse;
+import application.responses.UserResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

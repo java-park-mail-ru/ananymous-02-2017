@@ -1,4 +1,4 @@
-package application;
+package application.models;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
