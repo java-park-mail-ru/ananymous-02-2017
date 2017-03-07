@@ -3,7 +3,6 @@ package application.services;
 import application.db.Database;
 import application.models.User;
 import application.models.UserInfo;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -55,7 +54,7 @@ public class AccountService{
         return db.getUserID(username);
     }
 
-    private boolean doCheckPassword(@Nullable User user, @NotNull String password) {
+    private boolean doCheckPassword(User user, @NotNull String password) {
         return user != null && user.getPassword().equals(password);
     }
 }
