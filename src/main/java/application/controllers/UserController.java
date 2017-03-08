@@ -41,7 +41,7 @@ public class UserController {
 
         final Long id = accountService.signup(body);
         httpSession.setAttribute(USER_ID, id);
-        return ResponseEntity.ok("Success");
+        return ResponseEntity.ok(id);
     }
 
     @PostMapping(path = "/api/signin", consumes = "application/json")
@@ -64,7 +64,7 @@ public class UserController {
         }
 
         httpSession.setAttribute(USER_ID, id);
-        return ResponseEntity.ok("Success");
+        return ResponseEntity.ok(id);
     }
 
     @GetMapping(path = "/api/user", produces = "application/json")
