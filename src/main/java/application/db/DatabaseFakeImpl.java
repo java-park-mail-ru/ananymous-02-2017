@@ -19,7 +19,7 @@ public class DatabaseFakeImpl implements Database {
 
     @Override
     public Long add(@NotNull User user) {
-        Long id = ID_GEN.getAndIncrement();
+        final Long id = ID_GEN.getAndIncrement();
         idMap.put(user.getLogin(), id);
         idMap.put(user.getEmail(), id);
         db.put(id, user);

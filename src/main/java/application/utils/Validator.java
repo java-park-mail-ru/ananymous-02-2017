@@ -2,6 +2,7 @@ package application.utils;
 
 import application.models.User;
 import application.requests.UserRequest;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.regex.Matcher;
@@ -17,6 +18,7 @@ public class Validator {
     public static boolean isPassword(@NotNull String password) {
         return password != null && password.length() >= 8;
     }
+    @Nullable
     public static String getUserError(@NotNull User user) {
         if (!isLogin(user.getLogin())) {
             return "Invalid login: " + user.getLogin();
@@ -27,6 +29,7 @@ public class Validator {
         }
         return null;
     }
+    @Nullable
     public static String getUserRequestError(@NotNull UserRequest user) {
         if (user.getUsername() == null) {
             return "Invalid username: " + user.getUsername();

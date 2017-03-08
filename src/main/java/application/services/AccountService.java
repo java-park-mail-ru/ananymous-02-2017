@@ -28,12 +28,12 @@ public class AccountService{
     }
 
     public boolean isUserExists(@NotNull String username) {
-        Long id = getUserID(username);
+        final Long id = getUserID(username);
         return id != null && isUserExists(id);
     }
 
     public boolean checkUserAccount(@NotNull Long id, @NotNull String password) {
-        User user = getUser(id);
+        final User user = getUser(id);
         return doCheckPassword(user, password);
     }
 
@@ -42,7 +42,7 @@ public class AccountService{
     }
 
     public boolean changePassword(@NotNull Long id, @NotNull String oldPassword, @NotNull String newPassword) {
-        User user = getUser(id);
+        final User user = getUser(id);
         if (!doCheckPassword(user, oldPassword)) {
             return false;
         }
