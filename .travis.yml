@@ -1,0 +1,18 @@
+language: java
+sudo: required
+jdk:
+  - oraclejdk8
+branches:
+  only:
+  - develop
+deploy:
+  provider: heroku
+  api_key:
+    secure: 0947f07a-43d3-472a-ad0c-1bd3030ed741
+  app: ananymous
+  on:
+    repo: Chocco-Crokko/ananymous-02-2017
+    branch: develop
+  skip_cleanup: true
+install:
+  - mvn clean install
