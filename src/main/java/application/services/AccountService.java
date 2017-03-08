@@ -3,6 +3,7 @@ package application.services;
 import application.db.Database;
 import application.models.User;
 import application.models.UserInfo;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -28,12 +29,12 @@ public class AccountService{
     }
 
     public boolean isUserExists(@NotNull String username) {
-        Long id = getUserID(username);
+        final Long id = getUserID(username);
         return id != null && isUserExists(id);
     }
 
     public boolean checkUserAccount(@NotNull Long id, @NotNull String password) {
-        User user = getUser(id);
+        final User user = getUser(id);
         return doCheckPassword(user, password);
     }
 
@@ -42,7 +43,7 @@ public class AccountService{
     }
 
     public boolean changePassword(@NotNull Long id, @NotNull String oldPassword, @NotNull String newPassword) {
-        User user = getUser(id);
+        final User user = getUser(id);
         if (!doCheckPassword(user, oldPassword)) {
             return false;
         }
@@ -54,7 +55,7 @@ public class AccountService{
         return db.getUserID(username);
     }
 
-    private boolean doCheckPassword(User user, @NotNull String password) {
+    private boolean doCheckPassword(@Nullable User user, @NotNull String password) {
         return user != null && user.getPassword().equals(password);
     }
 }
