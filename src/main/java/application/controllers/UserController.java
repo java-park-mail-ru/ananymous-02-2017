@@ -1,12 +1,11 @@
 package application.controllers;
 
-import application.services.AccountService;
-import application.requests.PasswordRequest;
-import application.exceptions.RequestException;
 import application.models.User;
-import application.responses.ErrorResponse;
-import application.responses.StatusResponse;
-import application.responses.UserResponse;
+import application.models.UserInfo;
+import application.requests.PasswordRequest;
+import application.requests.UserRequest;
+import application.services.AccountService;
+import application.utils.Validator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,96 +18,98 @@ import javax.validation.constraints.NotNull;
 public class UserController {
     @NotNull
     private final AccountService accountService;
+    private static final String USER_ID = "userID";
 
     public UserController(@NotNull AccountService accountService)
     {
         this.accountService = accountService;
     }
 
-    @GetMapping("/api/status")
-    public ResponseEntity status()
-    {
-        return ResponseEntity.ok(new StatusResponse("OK"));
-    }
-
-    @PostMapping(path = "/api/signup", produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/api/signup", consumes = "application/json")
     public ResponseEntity signup(@RequestBody User body, HttpSession httpSession)
     {
-        if (getUserID(httpSession) != null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("User logged in this session"));
+        String error = Validator.getUserError(body);
+        if (error != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } else if (httpSession.getAttribute(USER_ID) != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User logged in this session");
+        } else if (accountService.isUserExists(body.getLogin())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(String.format("login: {0}, email: {1}, user already exist", body.getLogin(), body.getEmail()));
         }
-        try {
-            accountService.signup(body);
-        } catch (RequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getMessage()));
-        }
+
+        Long id = accountService.signup(body);
+        httpSession.setAttribute(USER_ID, id);
         return ResponseEntity.ok("Success");
     }
 
-    @PostMapping(path = "/api/signin", produces = "application/json", consumes = "application/json")
-    public ResponseEntity signin(@RequestBody User body, HttpSession httpSession)
+    @PostMapping(path = "/api/signin", consumes = "application/json")
+    public ResponseEntity signin(@RequestBody UserRequest body, HttpSession httpSession)
     {
-        if (getUserID(httpSession) != null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("User logged in this session"));
+        String error = Validator.getUserRequestError(body);
+        if (error != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } else if (httpSession.getAttribute(USER_ID) != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User logged in this session");
         }
-        String userID;
-        try {
-            userID = accountService.login(body.getLogin(), body.getPassword());
-        } catch (RequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getMessage()));
+        String username = body.getUsername();
+        Long id = accountService.getUserID(username);
+        if (id == null || accountService.isUserExists(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(String.format("username: {0}, user not found", username));
+        } else if (!accountService.checkUserAccount(id, body.getPassword())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(String.format("username: {0}, wrong username and/or password", username));
         }
-        httpSession.setAttribute(httpSession.getId(), userID);
+
+        httpSession.setAttribute(USER_ID, id);
         return ResponseEntity.ok("Success");
     }
 
     @GetMapping(path = "/api/user", produces = "application/json")
     public ResponseEntity getUser(HttpSession httpSession)
     {
-        User user;
-        try {
-            user = getUserFromDB(httpSession);
-        } catch (RequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getMessage()));
+        Long id = (Long) httpSession.getAttribute(USER_ID);
+        if (id == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
         }
-        return ResponseEntity.ok(new UserResponse(user.getLogin(), user.getEmail()));
+        UserInfo user = accountService.getUserInfo(id);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(String.format("id: {0}, bad cookies", id));
+        }
+        return ResponseEntity.ok(user);
     }
 
-    @PostMapping(path = "/api/change-pass", produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/api/changePassword", consumes = "application/json")
     public ResponseEntity changePassword(@RequestBody PasswordRequest body, HttpSession httpSession)
     {
-        User user;
-        try {
-            user = getUserFromDB(httpSession);
-            accountService.changePassword(user, body.getOldPassword(), body.getNewPassword());
-        } catch (RequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getMessage()));
+        if (!(Validator.isPassword(body.getOldPassword()) && Validator.isPassword(body.getNewPassword()))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid password(s)");
+        }
+        Long id = (Long) httpSession.getAttribute(USER_ID);
+        if (id == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        }
+        if (!accountService.isUserExists(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(String.format("id: {0}, bad cookies", id));
+        }
+        boolean isSuccess = accountService.changePassword(id, body.getOldPassword(), body.getNewPassword());
+        if (!isSuccess) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(String.format("id: {0}, wrong username and/or password", id));
         }
         return ResponseEntity.ok("Success");
     }
 
-    @PostMapping(path = "/api/logout", produces = "application/json")
+    @PostMapping(path = "/api/logout")
     public ResponseEntity logout(HttpSession httpSession)
     {
-        if (getUserID(httpSession) == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("User logged out"));
+        if (httpSession.getAttribute(USER_ID) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
         }
-        httpSession.removeAttribute(httpSession.getId());
+        httpSession.removeAttribute(USER_ID);
         return ResponseEntity.ok("Success");
     }
-
-    private User getUserFromDB(HttpSession httpSession) throws RequestException
-    {
-        String userID = getUserID(httpSession);
-        if (userID == null) {
-            throw new RequestException(HttpStatus.UNAUTHORIZED, "User logged out");
-        }
-        return accountService.getUser(userID);
-    }
-
-    private String getUserID(HttpSession httpSession)
-    {
-        return (String) httpSession.getAttribute(httpSession.getId());
-    }
-
-
 }

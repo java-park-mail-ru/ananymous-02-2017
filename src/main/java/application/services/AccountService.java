@@ -1,68 +1,60 @@
 package application.services;
 
+import application.db.Database;
 import application.models.User;
-import application.models.UserProfile;
-import application.exceptions.RequestException;
-import org.springframework.http.HttpStatus;
+import application.models.UserInfo;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class AccountService{
+    private Database db;
 
-    private Map<String, UserProfile> DB = new HashMap<>();
-    private final AtomicLong ID_GEN = new AtomicLong(0);
+    public AccountService(@NotNull Database db) {
+        this.db = db;
+    }
 
-    public String signup(@NotNull User user)
-            throws RequestException
-    {
-        if (DB.containsKey(user.getLogin())) {
-            throw new RequestException(HttpStatus.CONFLICT, "This user already exist");
+    private User getUser(@NotNull Long id) {
+        return db.getUser(id);
+    }
+
+    public UserInfo getUserInfo(@NotNull Long id) {
+        return getUser(id);
+    }
+
+    public boolean isUserExists(@NotNull Long id) {
+        return db.hasUser(id);
+    }
+
+    public boolean isUserExists(@NotNull String username) {
+        Long id = getUserID(username);
+        return id != null && isUserExists(id);
+    }
+
+    public boolean checkUserAccount(@NotNull Long id, @NotNull String password) {
+        User user = getUser(id);
+        return doCheckPassword(user, password);
+    }
+
+    public Long signup(@NotNull User user) {
+        return db.add(user);
+    }
+
+    public boolean changePassword(@NotNull Long id, @NotNull String oldPassword, @NotNull String newPassword) {
+        User user = getUser(id);
+        if (!doCheckPassword(user, oldPassword)) {
+            return false;
         }
-        UserProfile userProfile = new UserProfile(ID_GEN.getAndIncrement(), user);
-        DB.put(user.getLogin(), userProfile);
-        return user.getLogin();
+        db.editUserPassword(id, newPassword);
+        return true;
     }
 
-    public String login(@NotNull String login, @NotNull String password)
-            throws RequestException
-    {
-        if (!DB.containsKey(login)) {
-            throw new RequestException(HttpStatus.NOT_FOUND, "User not found");
-        }
-        UserProfile userProfile = DB.get(login);
-        checkIfLoginIsCorrect(userProfile.getUser(), password);
-        return login;
+    public Long getUserID(@NotNull String username) {
+        return db.getUserID(username);
     }
 
-    public User getUser(@NotNull String userID)
-            throws RequestException
-    {
-        if (!DB.containsKey(userID)) {
-            throw new RequestException(HttpStatus.NOT_FOUND, "User not found");
-        }
-        return DB.get(userID).getUser();
+    private boolean doCheckPassword(User user, @NotNull String password) {
+        return user != null && user.getPassword().equals(password);
     }
-
-    public void changePassword(@NotNull User user, @NotNull String oldPassword, @NotNull String newPassword)
-            throws RequestException
-    {
-        checkIfLoginIsCorrect(user, oldPassword);
-        user.setPassword(newPassword);
-        DB.get(user.getLogin()).setUser(user);
-    }
-
-    private void checkIfLoginIsCorrect(@NotNull User user, @NotNull String password)
-            throws RequestException
-    {
-        if (!user.getPassword().equals(password)) {
-            throw new RequestException(HttpStatus.FORBIDDEN, "Wrong login or password");
-        }
-    }
-
-
 }
