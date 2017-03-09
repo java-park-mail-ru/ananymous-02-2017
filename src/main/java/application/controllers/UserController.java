@@ -34,9 +34,9 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         } else if (httpSession.getAttribute(USER_ID) != null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User logged in this session");
-        } else if (accountService.isUserExists(body.getLogin())) {
+        } else if (accountService.isUserExists(body.getLogin()) || accountService.isUserExists(body.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(String.format("login: {0}, email: {1}, user already exist", body.getLogin(), body.getEmail()));
+                    .body(String.format("login: %s, email: %s, user already exist", body.getLogin(), body.getEmail()));
         }
 
         final Long id = accountService.signup(body);
@@ -55,12 +55,12 @@ public class UserController {
         }
         final String username = body.getUsername();
         final Long id = accountService.getUserID(username);
-        if (id == null || accountService.isUserExists(id)) {
+        if (id == null || !accountService.isUserExists(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(String.format("username: {0}, user not found", username));
+                    .body(String.format("username: %s, user not found", username));
         } else if (!accountService.checkUserAccount(id, body.getPassword())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(String.format("username: {0}, wrong username and/or password", username));
+                    .body(String.format("username: %s, wrong username and/or password", username));
         }
 
         httpSession.setAttribute(USER_ID, id);
@@ -77,7 +77,7 @@ public class UserController {
         final UserInfo user = accountService.getUserInfo(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(String.format("id: {0}, bad cookies", id));
+                    .body(String.format("id: %s, bad cookies", id));
         }
         return ResponseEntity.ok(user);
     }
@@ -94,12 +94,12 @@ public class UserController {
         }
         if (!accountService.isUserExists(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(String.format("id: {0}, bad cookies", id));
+                    .body(String.format("id: %s, bad cookies", id));
         }
         final boolean isSuccess = accountService.changePassword(id, body.getOldPassword(), body.getNewPassword());
         if (!isSuccess) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(String.format("id: {0}, wrong username and/or password", id));
+                    .body(String.format("id: %s, wrong password", id));
         }
         return ResponseEntity.ok("Success");
     }

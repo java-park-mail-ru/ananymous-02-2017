@@ -17,6 +17,10 @@ public class User extends UserInfo {
         this.password = password;
     }
 
+    public UserInfo getUserInfo() {
+        return new UserInfo(login, email);
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }

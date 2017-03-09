@@ -21,7 +21,7 @@ public class AccountService{
     }
 
     public UserInfo getUserInfo(@NotNull Long id) {
-        return getUser(id);
+        return getUser(id).getUserInfo();
     }
 
     public boolean isUserExists(@NotNull Long id) {
@@ -51,7 +51,7 @@ public class AccountService{
         return true;
     }
 
-    public Long getUserID(@NotNull String username) {
+    public @Nullable Long getUserID(@NotNull String username) {
         return db.getUserID(username);
     }
 
