@@ -1,8 +1,10 @@
 package application.db;
 
 import application.models.User;
+import application.models.UserInfo;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,4 +47,9 @@ public class DatabaseFakeImpl implements Database {
     public Long getUserID(@NotNull String username) {
         return idMap.get(username);
     }
+
+//    @Override
+//    public Collection<User> getAllUsers() {
+//        return db.values();
+//    }
 }

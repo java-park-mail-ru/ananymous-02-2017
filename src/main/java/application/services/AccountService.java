@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @Service
 public class AccountService{
@@ -20,8 +21,9 @@ public class AccountService{
         return db.getUser(id);
     }
 
-    public UserInfo getUserInfo(@NotNull Long id) {
-        return getUser(id).getUserInfo();
+    public @Nullable UserInfo getUserInfo(@NotNull Long id) {
+        final User user = getUser(id);
+        return user == null ? null : user.getUserInfo();
     }
 
     public boolean isUserExists(@NotNull Long id) {
@@ -58,4 +60,8 @@ public class AccountService{
     private boolean doCheckPassword(@Nullable User user, @NotNull String password) {
         return user != null && user.getPassword().equals(password);
     }
+
+//    public Collection<User> getAllUsers() {
+//        return db.getAllUsers();
+//    }
 }
