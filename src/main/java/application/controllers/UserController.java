@@ -104,13 +104,11 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-//    @GetMapping(path = "/api/users", produces = "application/json")
-//    public ResponseEntity getAllUsers()
-//    {
-//        final User user = new User("aaa", "aaa@mail.ru", "aaaaaaaa");
-//        return ResponseEntity.ok((UserInfo) user);
-////        return ResponseEntity.ok(accountService.getAllUsers());
-//    }
+    @GetMapping(path = "/api/users", produces = "application/json")
+    public ResponseEntity getAllUsers()
+    {
+        return ResponseEntity.ok(accountService.getAllUsers());
+    }
 
     @PostMapping(path = "/api/change-pass", consumes = "application/json", produces = "application/json")
     public ResponseEntity changePassword(@RequestBody PasswordRequest body, HttpSession httpSession)

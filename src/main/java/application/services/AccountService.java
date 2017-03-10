@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.Iterator;
 
 @Service
 public class AccountService{
@@ -61,7 +62,14 @@ public class AccountService{
         return user != null && user.getPassword().equals(password);
     }
 
-//    public Collection<User> getAllUsers() {
-//        return db.getAllUsers();
-//    }
+    public UserInfo[] getAllUsers() {
+        final Collection<User> collection = db.getAllUsers();
+        UserInfo[] arr = new UserInfo[collection.size()];
+        Iterator<User> it = collection.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            arr[i++] = it.next().getUserInfo();
+        }
+        return arr;
+    }
 }

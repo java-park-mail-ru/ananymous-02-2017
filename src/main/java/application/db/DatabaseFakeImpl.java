@@ -1,7 +1,6 @@
 package application.db;
 
 import application.models.User;
-import application.models.UserInfo;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -48,8 +47,8 @@ public class DatabaseFakeImpl implements Database {
         return idMap.get(username);
     }
 
-//    @Override
-//    public Collection<User> getAllUsers() {
-//        return db.values();
-//    }
+    @Override
+    public Collection<User> getAllUsers() {
+        return db.values();
+    }
 }

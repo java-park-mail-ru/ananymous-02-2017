@@ -1,7 +1,6 @@
 package application.db;
 
 import application.models.User;
-import application.models.UserInfo;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -17,5 +16,5 @@ public interface Database {
 
     Long getUserID(@NotNull String username);
 
-//    Collection<User> getAllUsers();
+    Collection<User> getAllUsers();
 }
