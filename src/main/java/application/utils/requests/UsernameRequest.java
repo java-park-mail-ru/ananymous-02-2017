@@ -1,15 +1,15 @@
-package application.requests;
+package application.utils.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserRequest {
-    private String username;
-    private String password;
+public class UsernameRequest {
+    private final String username;
+    private final String password;
 
     @JsonCreator
-    public UserRequest(@JsonProperty("username") String username,
-                       @JsonProperty("password") String password) {
+    public UsernameRequest(@JsonProperty("username") String username,
+                           @JsonProperty("password") String password) {
         this.username = username;
         this.password = password;
     }

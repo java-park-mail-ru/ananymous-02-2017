@@ -1,17 +1,14 @@
-package application.models;
+package application.utils.responses;
 
-
-public class User {
+public class FullUserResponse {
     private final long id;
     private final String login;
     private final String email;
-    private final String password;
 
-    public User(long id, String login, String email, String password) {
+    public FullUserResponse(long id, String login, String email) {
         this.id = id;
         this.login = login;
         this.email = email;
-        this.password = password;
     }
 
     public long getId() {
@@ -24,9 +21,5 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }

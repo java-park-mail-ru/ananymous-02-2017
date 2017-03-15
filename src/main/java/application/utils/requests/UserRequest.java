@@ -1,21 +1,20 @@
-package application.models;
+package application.utils.requests;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class User {
-    private final long id;
+public class UserRequest {
     private final String login;
     private final String email;
     private final String password;
 
-    public User(long id, String login, String email, String password) {
-        this.id = id;
+    @JsonCreator
+    public UserRequest(@JsonProperty("login") String login,
+                       @JsonProperty("email") String email,
+                       @JsonProperty("password") String password) {
         this.login = login;
         this.email = email;
         this.password = password;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getLogin() {

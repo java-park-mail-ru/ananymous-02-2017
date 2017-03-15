@@ -1,12 +1,13 @@
 package application.controllers;
 
 import application.models.User;
-import application.models.UserInfo;
-import application.requests.PasswordRequest;
-import application.requests.UserRequest;
-import application.responses.MessageResponse;
 import application.services.AccountService;
 import application.utils.Validator;
+import application.utils.requests.PasswordRequest;
+import application.utils.requests.UserRequest;
+import application.utils.requests.UsernameRequest;
+import application.utils.responses.FullUserResponse;
+import application.utils.responses.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
-@SuppressWarnings("MalformedFormatString")
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = {"https:/soul-hunting.ru", "localhost"})
+@RequestMapping("/api")
 public class UserController {
     @NotNull
     private final AccountService accountService;
@@ -27,8 +28,9 @@ public class UserController {
         this.accountService = accountService;
     }
 
-    @PostMapping(path = "/api/signup", consumes = "application/json", produces = "application/json")
-    public ResponseEntity signup(@RequestBody User body, HttpSession httpSession)
+
+    @PostMapping(path = "/signup", consumes = "application/json", produces = "application/json")
+    public ResponseEntity signup(@RequestBody UserRequest body, HttpSession httpSession)
     {
         final String error = Validator.getUserError(body);
 
@@ -38,11 +40,12 @@ public class UserController {
         } else if (httpSession.getAttribute(USER_ID) != null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new MessageResponse("User logged in this session"));
-        } else if (accountService.isUserExists(body.getLogin()) || accountService.isUserExists(body.getEmail())) {
-            final MessageResponse response =  new MessageResponse(String
-                    .format("login: %s, email: %s, user already exist", body.getLogin(), body.getEmail()));
+        } else if (accountService.isUniqueLogin(body.getLogin())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(response);
+                    .body(body.getLogin() + "already exist");
+        } else if (accountService.isUniqueEmail(body.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(body.getEmail() + "already exist");
         }
 
         final Long id = accountService.signup(body);
@@ -50,8 +53,8 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse(id.toString()));
     }
 
-    @PostMapping(path = "/api/signin", consumes = "application/json", produces = "application/json")
-    public ResponseEntity signin(@RequestBody UserRequest body, HttpSession httpSession)
+    @PostMapping(path = "/signin", consumes = "application/json", produces = "application/json")
+    public ResponseEntity signin(@RequestBody UsernameRequest body, HttpSession httpSession)
     {
         final String error = Validator.getUserRequestError(body);
 
@@ -71,46 +74,46 @@ public class UserController {
                     .body(new MessageResponse(String.format("username: %s, user not found", username)));
         } else if (!accountService.checkUserAccount(id, body.getPassword())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new MessageResponse(String.format("username: %s, wrong username and/or password", username)));
+                    .body(new MessageResponse(String.format("username: %s, wrong password", username)));
         }
 
         httpSession.setAttribute(USER_ID, id);
         return ResponseEntity.ok(new MessageResponse(id.toString()));
     }
 
-    @GetMapping(path = "/api/cur-user", produces = "application/json")
+    @GetMapping(path = "/cur-user", produces = "application/json")
     public ResponseEntity getCurrentUser(HttpSession httpSession) {
         final Long id = (Long) httpSession.getAttribute(USER_ID);
         if (id == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("User not logged in"));
         }
-        final UserInfo user = accountService.getUserInfo(id);
+        final User user = accountService.getUser(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse(String.format("id: %s, bad cookies", id)));
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new FullUserResponse(id, user.getLogin(), user.getEmail()));
     }
 
-    @GetMapping(path = "/api/users/{id}", produces = "application/json")
+    @GetMapping(path = "/users/{id}", produces = "application/json")
     public ResponseEntity getUser(@PathVariable Long id)
     {
-        final UserInfo user = accountService.getUserInfo(id);
+        final User user = accountService.getUser(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse(String.format("id: %s, user not found", id)));
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new FullUserResponse(user.getId(), user.getLogin(), user.getEmail()));
     }
 
-    @GetMapping(path = "/api/users", produces = "application/json")
+    @GetMapping(path = "/users", produces = "application/json")
     public ResponseEntity getAllUsers()
     {
         return ResponseEntity.ok(accountService.getAllUsers());
     }
 
-    @PostMapping(path = "/api/change-pass", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/change-pass", consumes = "application/json", produces = "application/json")
     public ResponseEntity changePassword(@RequestBody PasswordRequest body, HttpSession httpSession)
     {
         if (!(Validator.isPassword(body.getOldPassword()) && Validator.isPassword(body.getNewPassword()))) {
@@ -122,11 +125,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("User not logged in"));
         }
-        if (!accountService.isUserExists(id)) {
+        final User user = accountService.getUser(id);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse(String.format("id: %s, bad cookies", id)));
         }
-        final boolean isSuccess = accountService.changePassword(id, body.getOldPassword(), body.getNewPassword());
+        final boolean isSuccess = accountService.changePassword(user, body.getOldPassword(), body.getNewPassword());
         if (!isSuccess) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new MessageResponse(String.format("id: %s, wrong password", id)));
@@ -134,7 +138,7 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("Success"));
     }
 
-    @PostMapping(path = "/api/logout", produces = "application/json")
+    @PostMapping(path = "/logout", produces = "application/json")
     public ResponseEntity logout(HttpSession httpSession)
     {
         if (httpSession.getAttribute(USER_ID) == null) {

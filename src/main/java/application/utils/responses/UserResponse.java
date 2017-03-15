@@ -1,8 +1,8 @@
-package application.responses;
+package application.utils.responses;
 
 public class UserResponse {
-    private String login;
-    private String email;
+    private final String login;
+    private final String email;
 
     public UserResponse(String login, String email) {
         this.login = login;
