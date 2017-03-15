@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@CrossOrigin(origins = {"https:/soul-hunting.ru", "localhost"})
+@CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
 @RequestMapping("/api")
 public class UserController extends BaseController {
 

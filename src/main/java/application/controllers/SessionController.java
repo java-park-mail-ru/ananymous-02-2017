@@ -4,6 +4,7 @@ import application.services.AccountService;
 import application.utils.Validator;
 import application.utils.requests.UserRequest;
 import application.utils.requests.UsernameRequest;
+import application.utils.responses.IdResponse;
 import application.utils.responses.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@CrossOrigin(origins = {"https:/soul-hunting.ru", "localhost"})
+@CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
 @RequestMapping("/api")
 public class SessionController extends BaseController {
 
@@ -44,7 +45,7 @@ public class SessionController extends BaseController {
 
         final Long id = accountService.signup(body);
         httpSession.setAttribute(USER_ID, id);
-        return ResponseEntity.ok(new MessageResponse(id.toString()));
+        return ResponseEntity.ok(new IdResponse(id));
     }
 
     @PostMapping(path = "/signin", consumes = "application/json", produces = "application/json")
@@ -72,7 +73,7 @@ public class SessionController extends BaseController {
         }
 
         httpSession.setAttribute(USER_ID, id);
-        return ResponseEntity.ok(new MessageResponse(id.toString()));
+        return ResponseEntity.ok(new IdResponse(id));
     }
 
     @PostMapping(path = "/logout", produces = "application/json")
