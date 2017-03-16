@@ -1,7 +1,7 @@
 package application.utils;
 
-import application.models.User;
-import application.requests.UserRequest;
+import application.utils.requests.UserRequest;
+import application.utils.requests.UsernameRequest;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -18,7 +18,7 @@ public class Validator {
     public static boolean isPassword(@NotNull String password) {
         return password != null && password.length() >= 8;
     }
-    public static @Nullable String getUserError(@NotNull User user) {
+    public static @Nullable String getUserError(@NotNull UserRequest user) {
         if (!isLogin(user.getLogin())) {
             return "Invalid login: " + user.getLogin();
         } else if (!isEmail(user.getEmail())) {
@@ -28,7 +28,7 @@ public class Validator {
         }
         return null;
     }
-    public static @Nullable String getUserRequestError(@NotNull UserRequest user) {
+    public static @Nullable String getUserRequestError(@NotNull UsernameRequest user) {
         if (user.getUsername() == null) {
             return "Invalid username: " + user.getUsername();
         } else if (!isPassword(user.getPassword())) {

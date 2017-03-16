@@ -1,10 +1,11 @@
-package application.requests;
+package application.utils.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PasswordRequest {
-  private String oldPassword, newPassword;
+  private final String oldPassword;
+  private final String newPassword;
 
   @JsonCreator
   public PasswordRequest(@JsonProperty("oldPassword") String oldPassword,
