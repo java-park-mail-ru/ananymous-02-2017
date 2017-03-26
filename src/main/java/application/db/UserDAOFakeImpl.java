@@ -1,13 +1,15 @@
 package application.db;
 
 import application.models.User;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class UserDAOFakeImpl implements UserDAO {
     private final Map<Long, User> db = new HashMap<Long, User>();
@@ -15,8 +17,7 @@ public class UserDAOFakeImpl implements UserDAO {
     private static final AtomicLong ID_GEN = new AtomicLong(0);
 
     @Override
-    @NotNull
-    public Long add(@NotNull String login, @NotNull String email, @NotNull String password) {
+    public @NotNull Long add(@NotNull String login, @NotNull String email, @NotNull String password) {
         final Long id = ID_GEN.getAndIncrement();
         idMap.put(login, id);
         idMap.put(email, id);
@@ -46,7 +47,12 @@ public class UserDAOFakeImpl implements UserDAO {
     }
 
     @Override
-    public Collection<User> getAllUsers() {
-        return db.values();
+    public @NotNull List<User> getUsers(int beg, int size) {
+        return db.values().stream().skip(beg).limit(size).collect(Collectors.toList());
+    }
+
+    @Override
+    public @NotNull List<User> getUsers() {
+        return db.values().stream().collect(Collectors.toList());
     }
 }

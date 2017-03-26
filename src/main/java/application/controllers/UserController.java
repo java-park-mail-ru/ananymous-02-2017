@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 @CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
 @RequestMapping("/api")
 public class UserController extends BaseController {
+    private static final int PAGE_COUNT = 2;
 
     public UserController(@NotNull AccountService accountService)
     {
@@ -50,9 +51,15 @@ public class UserController extends BaseController {
     }
 
     @GetMapping(path = "/users", produces = "application/json")
-    public ResponseEntity getAllUsers()
+    public ResponseEntity getUsers(@RequestParam(value = "page", defaultValue = "0") int page)
     {
-        return ResponseEntity.ok(accountService.getAllUsers());
+        if (page < 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Invalid page"));
+        } else if (page == 0) {
+            return ResponseEntity.ok(accountService.getUsers());
+        } else {
+            return ResponseEntity.ok(accountService.getUsers((page - 1) * PAGE_COUNT, PAGE_COUNT));
+        }
     }
 
     @PostMapping(path = "/change-pass", consumes = "application/json", produces = "application/json")
