@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
 @RequestMapping("/api")
 public class UserController extends BaseController {
-    private static final int PAGE_COUNT = 2;
+    private static final int PAGE_COUNT = 5;
 
     public UserController(@NotNull AccountService accountService)
     {
