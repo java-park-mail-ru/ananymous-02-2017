@@ -13,12 +13,24 @@ public class Validator {
     private static final int LOGIN_MAX_SIZE = 50;
     private static final int EMAIL_MAX_SIZE = 50;
     private static final int PASSWORD_MAX_SIZE = 200;
+    private static final int PASSWORD_MIN_SIZE = 8;
+
+    public static final String LOGIN_MAX_LENGHT_ERROR = "Max lenght of login is " + LOGIN_MAX_SIZE;
+    public static final String EMAIL_MAX_LENGHT_ERROR = "Max lenght of email is " + EMAIL_MAX_SIZE;
+    public static final String PASSWORD_MAX_LENGHT_ERROR = "Max lenght of password is " + EMAIL_MAX_SIZE;
+    public static final String PASSWORD_MIN_LENGHT_ERROR = "Password must be at least " + PASSWORD_MIN_SIZE + " symbols";
+    public static final String EMPTY_LOGIN = "Login is empty";
+    public static final String EMPTY_USERNAME = "Username is empty";
+    public static final String EMPTY_EMAIL = "Email is empty";
+    public static final String EMPTY_PASSWORD = "Password is empty";
+    public static final String WRONG_EMAIL_SCHEME = "Wrong email scheme";
+    public static final String WRONG_LOGIN_SCHEME = "Login must contain only letters, digits, '_' and '-' and contain at least 3 symbols";
 
     public static @Nullable String checkEmail(@NotNull String email) {
         if (email.length() > EMAIL_MAX_SIZE) {
-            return "Max lenght of email is " + EMAIL_MAX_SIZE;
+            return EMAIL_MAX_LENGHT_ERROR;
         } else if (!doValidate(email, "^([a-zA-Z0-9_\\.-]+)@([\\da-zA-Z\\.-]+)\\.([a-z\\.]{2,6})$")) {
-            return "Wrong email scheme";
+            return WRONG_EMAIL_SCHEME;
         }
 
         return null;
@@ -26,9 +38,9 @@ public class Validator {
 
     public static @Nullable String checkLogin(@NotNull String login) {
         if (login.length() > LOGIN_MAX_SIZE) {
-            return "Max lenght of login is " + LOGIN_MAX_SIZE;
+            return LOGIN_MAX_LENGHT_ERROR;
         } else if (!doValidate(login, "^[a-zA-Z0-9_-]{3,}$")) {
-            return "Login must contain only letters, digits, '_' and '-' and contain at least 3 symbols";
+            return WRONG_LOGIN_SCHEME;
         }
 
         return null;
@@ -36,9 +48,9 @@ public class Validator {
 
     public static @Nullable String checkPassword(@NotNull String password) {
         if (password.length() > PASSWORD_MAX_SIZE) {
-            return "Max lenght of password is " + PASSWORD_MAX_SIZE;
+            return PASSWORD_MAX_LENGHT_ERROR;
         } else if (password.length() < 8) {
-            return "Password must be at least 8 symbols";
+            return PASSWORD_MIN_LENGHT_ERROR;
         }
 
         return null;
@@ -49,11 +61,11 @@ public class Validator {
         final String email = user.getEmail();
         final String password = user.getPassword();
         if (StringUtils.isEmpty(login)) {
-            return "Login is empty";
+            return EMPTY_LOGIN;
         } else if (StringUtils.isEmpty(email)) {
-            return "Email is empty";
+            return EMPTY_EMAIL;
         } else if (StringUtils.isEmpty(password)) {
-            return "Password is empty";
+            return EMPTY_PASSWORD;
         }
 
         String error;
@@ -76,9 +88,9 @@ public class Validator {
         final String username = user.getUsername();
         final String password = user.getPassword();
         if (StringUtils.isEmpty(username)) {
-            return "Username is empty";
+            return EMPTY_USERNAME;
         } else if (StringUtils.isEmpty(password)) {
-            return "Password is empty";
+            return EMPTY_PASSWORD;
         }
 
         final String error;
