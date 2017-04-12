@@ -46,7 +46,7 @@ public class UserController extends BaseController {
     public ResponseEntity getUsers(@RequestParam(value = "page", defaultValue = "0") int page)
     {
         if (page < 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Invalid page"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Invalid page number"));
         } else if (page == 0) {
             return ResponseEntity.ok(accountService.getUsers());
         } else {
