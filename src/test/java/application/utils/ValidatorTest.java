@@ -46,7 +46,7 @@ public class ValidatorTest {
 
     @Test
     public void testCorrectUserRequest() {
-        Assert.assertNotNull(Validator.getUserError(new UserRequest("user", "user@mail.ru", "qwerty1234")));
+        Assert.assertNull(Validator.getUserError(new UserRequest("user", "user@mail.ru", "qwerty1234")));
     }
 
     @Test
