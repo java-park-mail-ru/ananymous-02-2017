@@ -4,7 +4,9 @@ import application.models.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,6 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 public class UserDAOImpl implements UserDAO{
     private static final String TABLE_NAME = "users";
@@ -28,15 +31,22 @@ public class UserDAOImpl implements UserDAO{
     public @Nullable Long add(@NotNull String login, @NotNull String email, @NotNull String password) {
         try {
             final KeyHolder idHolder = new GeneratedKeyHolder();
-            final String query = "INSERT INTO users (login, email, password) VALUES (?, ?, ?) RETURNING id";
             template.update(con -> {
+                final String query = "INSERT INTO users (login, email, password) VALUES (?, ?, ?)";
                 final PreparedStatement pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 pst.setString(1, login);
                 pst.setString(2, email);
                 pst.setString(3, password);
                 return pst;
             }, idHolder);
-            return idHolder.getKey().longValue();
+            final Map<String, Object> keys = idHolder.getKeys();
+            if (keys.size() > 1) {
+                // postgres
+                return ((Integer) keys.get("id")).longValue();
+            } else {
+                // h2
+                return idHolder.getKey().longValue();
+            }
         } catch (DuplicateKeyException e) {
             return null;
         }
@@ -44,8 +54,12 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public @Nullable User getUser(@NotNull Long id) {
-        final String query = "SELECT * FROM users WHERE id = ?";
-        return template.queryForObject(query, USER_ROW_MAPPER, id);
+        try {
+            final String query = "SELECT * FROM users WHERE id = ?";
+            return template.queryForObject(query, USER_ROW_MAPPER, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
@@ -61,8 +75,12 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public @Nullable Long getUserID(@NotNull String username) {
-        final String query = "SELECT id FROM users WHERE LOWER(login) = LOWER(?) OR LOWER(email) = LOWER(?)";
-        return template.queryForObject(query, Long.class, username, username);
+        try {
+            final String query = "SELECT id FROM users WHERE LOWER(login) = LOWER(?) OR LOWER(email) = LOWER(?)";
+            return template.queryForObject(query, Long.class, username, username);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

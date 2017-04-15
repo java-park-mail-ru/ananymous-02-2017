@@ -41,7 +41,7 @@ public class AccountService{
         return user != null && doCheckPassword(user, password);
     }
 
-    public @Nullable Long signup(@NotNull UserRequest user) {
+    public @Nullable Long addUser(@NotNull UserRequest user) {
         final String encodedPassword = encoder.encode(user.getPassword());
         return db.add(user.getLogin(), user.getEmail(), encodedPassword);
     }

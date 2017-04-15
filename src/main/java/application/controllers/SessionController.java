@@ -38,7 +38,7 @@ public class SessionController extends BaseController {
                     .body(new MessageResponse("User logged in this session"));
         }
 
-        final Long id = accountService.signup(body);
+        final Long id = accountService.addUser(body);
         if (id == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new MessageResponse(String.format("User %s already exist", body.getLogin())));
