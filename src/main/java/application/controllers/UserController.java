@@ -8,6 +8,7 @@ import application.utils.responses.FullUserResponse;
 import application.utils.responses.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
 @RequestMapping("/api")
+@Transactional
 public class UserController extends BaseController {
     private static final int USERS_ON_PAGE = 5;
 

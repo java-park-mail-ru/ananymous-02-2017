@@ -27,12 +27,6 @@ public class AccountServiceTest {
     @Autowired
     private AccountService accountService;
 
-    @Before
-    public void before() {
-        accountService.clear();
-        addDefaultUser();
-    }
-
     @NotNull
     private UserRequest getDefaultUserRequest() {
         return new UserRequest("test", "test@mail.ru", PASSWORD);
@@ -47,19 +41,26 @@ public class AccountServiceTest {
     }
 
     @Test
+    public void testUsersEmpty() {
+        Assert.assertTrue(accountService.getUsers().isEmpty());
+    }
+
+    @Test
     public void testUsersNotEmpty() {
+        addDefaultUser();
         Assert.assertFalse(accountService.getUsers().isEmpty());
     }
 
     @Test
     public void testConflict() {
+        addDefaultUser();
         Assert.assertNull(addDefaultUser());
     }
 
     @Test
     public void testAddUser() {
-        final Long id2 = addUser("test2", "test2@mail.ru", PASSWORD);
-        Assert.assertNotNull(id2);
+        final Long id = addDefaultUser();
+        Assert.assertNotNull(id);
     }
 
     @Test
@@ -85,8 +86,9 @@ public class AccountServiceTest {
 
     @Test
     public void testGetUserByUsername() {
-        Assert.assertNotNull(accountService.getUserID(getDefaultUserRequest().getLogin()));
-        Assert.assertNotNull(accountService.getUserID(getDefaultUserRequest().getEmail()));
+        final Long id = addDefaultUser();
+        Assert.assertEquals(id, accountService.getUserID(getDefaultUserRequest().getLogin()));
+        Assert.assertEquals(id, accountService.getUserID(getDefaultUserRequest().getEmail()));
     }
 
     @Test
@@ -94,7 +96,7 @@ public class AccountServiceTest {
         final String login = "ulogin";
         final String email = "uemail@mail.ru";
         final String rawPassword = "rawPassword";
-        Long id = addUser(login, email, rawPassword);
+        final Long id = addUser(login, email, rawPassword);
         final User user = accountService.getUser(id);
         Assert.assertFalse(accountService.checkUserAccount(id, user.getPassword()));
         Assert.assertTrue(accountService.checkUserAccount(id, rawPassword));
@@ -108,12 +110,10 @@ public class AccountServiceTest {
         final String email = "uemail@mail.ru";
         final String rawPassword = "rawPassword";
         final String newPassword = "newPassword";
-        Long id = addUser(login, email, rawPassword);
+        final Long id = addUser(login, email, rawPassword);
         final User user = accountService.getUser(id);
 
         Assert.assertTrue(accountService.changePassword(user, rawPassword, newPassword));
-
-        final User userWithAnotherPassword = accountService.getUser(id);
 
         Assert.assertTrue(accountService.checkUserAccount(id, newPassword));
     }
@@ -126,22 +126,28 @@ public class AccountServiceTest {
 
     @Test
     public void testGetUsers() {
-        final List<FullUserResponse> users = accountService.getUsers();
         final int count = 5;
         addNUsers(count);
-        final List<FullUserResponse> usersWithNew = accountService.getUsers();
-        Assert.assertEquals(usersWithNew.size() - users.size(), count);
+        final List<FullUserResponse> users = accountService.getUsers();
+        Assert.assertEquals(count, users.size());
     }
 
     @Test
     public void testGetUsersByPage() {
         final int count = 10;
         addNUsers(count);
+        Assert.assertEquals(accountService.getUsers().size(), accountService.getUsers(0, Integer.MAX_VALUE).size());
+        Assert.assertEquals(count, accountService.getUsers(0, count).size());
+
+        final int usersOnPage = 3;
+        Assert.assertEquals(0, accountService.getUsers(count, usersOnPage).size());
+        Assert.assertEquals(1, accountService.getUsers(count - 1, usersOnPage).size());
+    }
+
+    @Test
+    public void testGetUsersByInvalidPage() {
         Assert.assertTrue(accountService.getUsers(0, -1).isEmpty());
         Assert.assertTrue(accountService.getUsers(INVALID_PAGE, 1).isEmpty());
-
-        Assert.assertEquals(accountService.getUsers().size(), accountService.getUsers(0, Integer.MAX_VALUE).size());
-        Assert.assertEquals(accountService.getUsers(0, count).size(), count);
     }
 
 }
