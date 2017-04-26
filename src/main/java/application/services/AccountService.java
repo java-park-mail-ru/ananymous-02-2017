@@ -9,9 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Iterator;
 
 @Service
 public class AccountService{
@@ -41,7 +40,7 @@ public class AccountService{
         return user != null && doCheckPassword(user, password);
     }
 
-    public @Nullable Long addUser(@NotNull UserRequest user) {
+    public Long signup(@NotNull UserRequest user) {
         final String encodedPassword = encoder.encode(user.getPassword());
         return db.add(user.getLogin(), user.getEmail(), encodedPassword);
     }
@@ -63,26 +62,17 @@ public class AccountService{
         return encoder.matches(password, user.getPassword());
     }
 
-    public List<FullUserResponse> getUsers(int beg, int size) {
-        if (size <= 0) {
-            return Collections.emptyList();
+    public FullUserResponse[] getAllUsers() {
+        final Collection<User> collection = db.getAllUsers();
+        final FullUserResponse[] arr = new FullUserResponse[collection.size()];
+        final Iterator<User> it = collection.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            final User user = it.next();
+            arr[i++] = new FullUserResponse(user.getId(), user.getLogin(), user.getEmail());
         }
-        return convertUser(db.getUsers(beg, size));
+        return arr;
     }
-
-    public List<FullUserResponse> getUsers() {
-        return convertUser(db.getUsers());
-    }
-
-    private List<FullUserResponse> convertUser(List<User> users) {
-        return users.stream().map(user -> new FullUserResponse(user.getId(), user.getLogin(), user.getEmail()))
-                .collect(Collectors.toList());
-    }
-
-    public void clear() {
-        db.clear();
-    }
-
 
     public boolean isUniqueLogin(String login) {
         return isUserExists(login);
