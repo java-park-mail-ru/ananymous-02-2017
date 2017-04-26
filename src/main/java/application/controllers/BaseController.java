@@ -1,6 +1,8 @@
 package application.controllers;
 
 import application.services.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 
