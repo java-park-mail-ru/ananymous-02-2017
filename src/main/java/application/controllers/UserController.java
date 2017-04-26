@@ -26,13 +26,6 @@ public class UserController extends BaseController {
         super(accountService);
     }
 
-    // TODO remove this
-    @GetMapping(path = "/do-not-call")
-    public ResponseEntity clear() {
-        accountService.clear();
-        return ResponseEntity.ok("OK");
-    }
-
     @GetMapping(path = "/users/{id}", produces = "application/json")
     public ResponseEntity getUser(@PathVariable Long id)
     {
