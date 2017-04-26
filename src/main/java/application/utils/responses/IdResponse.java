@@ -4,7 +4,6 @@ public class IdResponse {
     private final long id;
 
     public IdResponse(long id) {
-
         this.id = id;
     }
 
