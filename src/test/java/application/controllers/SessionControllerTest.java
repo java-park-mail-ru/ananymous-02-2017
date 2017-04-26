@@ -64,7 +64,7 @@ public class SessionControllerTest {
         List<String> cookie = signup("", email, password, HttpStatus.BAD_REQUEST, null);
 
         cookie = signup(login, email, password, HttpStatus.OK, cookie);
-        cookie = signup("uniq", "uniq@mail.ru", password, HttpStatus.FORBIDDEN, cookie);
+        signup("uniq", "uniq@mail.ru", password, HttpStatus.OK, cookie);
 
     }
 
