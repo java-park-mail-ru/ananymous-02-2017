@@ -4,7 +4,6 @@ import application.models.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 
 public interface UserDAO {
