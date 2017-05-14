@@ -8,14 +8,15 @@ import java.util.List;
 
 public interface UserDAO {
     @Nullable
-    Long add(@NotNull String login, @NotNull String email, @NotNull String password);
+    Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore);
 
     @Nullable
     User getUser(@NotNull Long id);
 
-    boolean hasUser(@NotNull Long id);
+    void editUser(@NotNull Long id, @Nullable String login, @Nullable String email, @Nullable String password,
+                  @Nullable Integer sScore, @Nullable Integer mScore);
 
-    void editUserPassword(@NotNull User user, @NotNull String password);
+    void addScore(@NotNull Long id, int sScore, int mScore);
 
     @Nullable
     Long getUserID(@NotNull String username);

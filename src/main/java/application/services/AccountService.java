@@ -5,6 +5,7 @@ import application.models.User;
 import application.utils.requests.UserRequest;
 import application.utils.responses.FullUserResponse;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,15 +28,6 @@ public class AccountService{
         return db.getUser(id);
     }
 
-    public boolean isUserExists(@NotNull Long id) {
-        return db.hasUser(id);
-    }
-
-    private boolean isUserExists(@NotNull String username) {
-        final Long id = getUserID(username);
-        return id != null && isUserExists(id);
-    }
-
     public boolean checkUserAccount(@NotNull Long id, @NotNull String password) {
         final User user = getUser(id);
         return user != null && doCheckPassword(user, password);
@@ -43,7 +35,7 @@ public class AccountService{
 
     public @Nullable Long addUser(@NotNull UserRequest user) {
         final String encodedPassword = encoder.encode(user.getPassword());
-        return db.add(user.getLogin(), user.getEmail(), encodedPassword);
+        return db.add(user.getLogin(), user.getEmail(), encodedPassword, 0, 0);
     }
 
     public boolean changePassword(@NotNull User user, @NotNull String oldPassword, @NotNull String newPassword) {
@@ -51,7 +43,7 @@ public class AccountService{
             return false;
         }
         final String encodedNewPassword = encoder.encode(newPassword);
-        db.editUserPassword(user, encodedNewPassword);
+        db.editUser(user.getId(), null, null, encodedNewPassword, null, null);
         return true;
     }
 
@@ -75,7 +67,7 @@ public class AccountService{
     }
 
     private List<FullUserResponse> convertUser(List<User> users) {
-        return users.stream().map(user -> new FullUserResponse(user.getId(), user.getLogin(), user.getEmail()))
+        return users.stream().map(FullUserResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -83,12 +75,18 @@ public class AccountService{
         db.clear();
     }
 
-
-    public boolean isUniqueLogin(String login) {
-        return isUserExists(login);
-    }
-
-    public boolean isUniqueEmail(String email) {
-        return isUserExists(email);
+    public boolean addScore(@NotNull String login, int sScore, int mScore) {
+        if (sScore < 0) {
+            sScore = 0;
+        }
+        if (mScore < 0) {
+            mScore = 0;
+        }
+        final Long id = db.getUserID(login);
+        if (id == null) {
+            return false;
+        }
+        db.addScore(id, sScore, mScore);
+        return true;
     }
 }

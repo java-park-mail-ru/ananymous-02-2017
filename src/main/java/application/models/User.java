@@ -6,12 +6,16 @@ public class User {
     private final String login;
     private final String email;
     private final String password;
+    private final int sScore;
+    private final int mScore;
 
-    public User(long id, String login, String email, String password) {
+    public User(long id, String login, String email, String password, int sScore, int mScore) {
         this.id = id;
         this.login = login;
         this.email = email;
         this.password = password;
+        this.sScore = sScore;
+        this.mScore = mScore;
     }
 
     public long getId() {
@@ -28,5 +32,13 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getsScore() {
+        return sScore;
+    }
+
+    public int getmScore() {
+        return mScore;
     }
 }
