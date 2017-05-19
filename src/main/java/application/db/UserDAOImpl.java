@@ -96,14 +96,16 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public @NotNull List<User> getUsers(int beg, int size) {
-        final String query = "SELECT * FROM users LIMIT ? OFFSET ?";
+    public @NotNull List<User> getBestUsers(int beg, int size) {
+        final String query = "SELECT u.* FROM users u JOIN " +
+                "(SELECT id FROM users u ORDER BY sScore DESC LIMIT ? OFFSET ?) j ON (j.id = u.id)" +
+                " ORDER BY sScore DESC";
         return template.query(query, USER_ROW_MAPPER, size, beg);
     }
 
     @Override
-    public @NotNull List<User> getUsers() {
-        final String query = "SELECT * FROM users";
+    public @NotNull List<User> getBestUsers() {
+        final String query = "SELECT * FROM users ORDER BY sScore DESC";
         return template.query(query, USER_ROW_MAPPER);
     }
 

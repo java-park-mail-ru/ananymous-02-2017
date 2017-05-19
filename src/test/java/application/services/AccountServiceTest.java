@@ -43,13 +43,13 @@ public class AccountServiceTest {
 
     @Test
     public void testUsersEmpty() {
-        assertTrue(accountService.getUsers().isEmpty());
+        assertTrue(accountService.getBestUsers().isEmpty());
     }
 
     @Test
     public void testUsersNotEmpty() {
         addDefaultUser();
-        assertFalse(accountService.getUsers().isEmpty());
+        assertFalse(accountService.getBestUsers().isEmpty());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class AccountServiceTest {
     public void testGetUsers() {
         final int count = 5;
         addNUsers(count);
-        final List<FullUserResponse> users = accountService.getUsers();
+        final List<FullUserResponse> users = accountService.getBestUsers();
         assertEquals(count, users.size());
     }
 
@@ -143,18 +143,18 @@ public class AccountServiceTest {
     public void testGetUsersByPage() {
         final int count = 10;
         addNUsers(count);
-        assertEquals(accountService.getUsers().size(), accountService.getUsers(0, Integer.MAX_VALUE).size());
-        assertEquals(count, accountService.getUsers(0, count).size());
+        assertEquals(accountService.getBestUsers().size(), accountService.getBestUsers(0, Integer.MAX_VALUE).size());
+        assertEquals(count, accountService.getBestUsers(0, count).size());
 
         final int usersOnPage = 3;
-        assertEquals(0, accountService.getUsers(count, usersOnPage).size());
-        assertEquals(1, accountService.getUsers(count - 1, usersOnPage).size());
+        assertEquals(0, accountService.getBestUsers(count, usersOnPage).size());
+        assertEquals(1, accountService.getBestUsers(count - 1, usersOnPage).size());
     }
 
     @Test
     public void testGetUsersByInvalidPage() {
-        assertTrue(accountService.getUsers(0, -1).isEmpty());
-        assertTrue(accountService.getUsers(INVALID_PAGE, 1).isEmpty());
+        assertTrue(accountService.getBestUsers(0, -1).isEmpty());
+        assertTrue(accountService.getBestUsers(INVALID_PAGE, 1).isEmpty());
     }
 
     @Test

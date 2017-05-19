@@ -22,10 +22,10 @@ public interface UserDAO {
     Long getUserID(@NotNull String username);
 
     @NotNull
-    List<User> getUsers(int beg, int size);
+    List<User> getBestUsers(int beg, int size);
 
     @NotNull
-    List<User> getUsers();
+    List<User> getBestUsers();
 
     void clear();
 }

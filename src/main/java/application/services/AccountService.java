@@ -5,7 +5,6 @@ import application.models.User;
 import application.utils.requests.UserRequest;
 import application.utils.responses.FullUserResponse;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,15 +54,15 @@ public class AccountService{
         return encoder.matches(password, user.getPassword());
     }
 
-    public List<FullUserResponse> getUsers(int beg, int size) {
+    public List<FullUserResponse> getBestUsers(int beg, int size) {
         if (size <= 0) {
             return Collections.emptyList();
         }
-        return convertUser(db.getUsers(beg, size));
+        return convertUser(db.getBestUsers(beg, size));
     }
 
-    public List<FullUserResponse> getUsers() {
-        return convertUser(db.getUsers());
+    public List<FullUserResponse> getBestUsers() {
+        return convertUser(db.getBestUsers());
     }
 
     private List<FullUserResponse> convertUser(List<User> users) {

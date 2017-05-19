@@ -39,14 +39,14 @@ public class UserController extends BaseController {
     }
 
     @GetMapping(path = "/users", produces = "application/json")
-    public ResponseEntity getUsers(@RequestParam(value = "page", defaultValue = "0") int page)
+    public ResponseEntity getBestUsers(@RequestParam(value = "page", defaultValue = "0") int page)
     {
         if (page < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Invalid page number"));
         } else if (page == 0) {
-            return ResponseEntity.ok(accountService.getUsers());
+            return ResponseEntity.ok(accountService.getBestUsers());
         } else {
-            return ResponseEntity.ok(accountService.getUsers((page - 1) * USERS_ON_PAGE, USERS_ON_PAGE));
+            return ResponseEntity.ok(accountService.getBestUsers((page - 1) * USERS_ON_PAGE, USERS_ON_PAGE));
         }
     }
 
