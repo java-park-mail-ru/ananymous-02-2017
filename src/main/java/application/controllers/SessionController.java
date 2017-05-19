@@ -105,6 +105,6 @@ public class SessionController extends BaseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse(String.format("id: %s, bad cookies", id)));
         }
-        return ResponseEntity.ok(new FullUserResponse(id, user.getLogin(), user.getEmail()));
+        return ResponseEntity.ok(new FullUserResponse(user));
     }
 }
