@@ -38,6 +38,7 @@ public class UserController extends BaseController {
         return ResponseEntity.ok(new FullUserResponse(user));
     }
 
+
     @GetMapping(path = "/users", produces = "application/json")
     public ResponseEntity getBestUsers(@RequestParam(value = "page", defaultValue = "0") int page)
     {

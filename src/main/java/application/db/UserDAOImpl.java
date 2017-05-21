@@ -66,7 +66,7 @@ public class UserDAOImpl implements UserDAO{
     @Override
     public void editUser(@NotNull Long id, @Nullable String newLogin, @Nullable String newEmail, @Nullable String newPassword,
                          @Nullable Integer newSScore, @Nullable Integer newMScore) {
-        String query = "UPDATE users SET " +
+        final String query = "UPDATE users SET " +
                 "login = COALESCE (?, login), " +
                 "email = COALESCE (?, email), " +
                 "password = COALESCE (?, password), " +
@@ -78,7 +78,7 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public void addScore(@NotNull Long id, int sScore, int mScore) {
-        String query = "UPDATE users SET " +
+        final String query = "UPDATE users SET " +
                 "sscore = sscore + ?, " +
                 "mscore = mscore + ?" +
                 "WHERE id = ?";
