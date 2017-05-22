@@ -4,7 +4,6 @@ import application.models.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -27,29 +26,25 @@ public class UserDAOImpl implements UserDAO{
     private JdbcTemplate template;
 
     @Override
-    public @Nullable Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore) {
-        try {
-            final KeyHolder idHolder = new GeneratedKeyHolder();
-            template.update(con -> {
-                final String query = "INSERT INTO users (login, email, password, sscore, mscore) VALUES (?, ?, ?, ?, ?)";
-                final PreparedStatement pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                pst.setString(1, login);
-                pst.setString(2, email);
-                pst.setString(3, password);
-                pst.setInt(4, sScore);
-                pst.setInt(5, mScore);
-                return pst;
-            }, idHolder);
-            final Map<String, Object> keys = idHolder.getKeys();
-            if (keys.size() > 1) {
-                // postgres
-                return ((Integer) keys.get("id")).longValue();
-            } else {
-                // h2
-                return idHolder.getKey().longValue();
-            }
-        } catch (DuplicateKeyException e) {
-            return null;
+    public @NotNull Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore) {
+        final KeyHolder idHolder = new GeneratedKeyHolder();
+        template.update(con -> {
+            final String query = "INSERT INTO users (login, email, password, sscore, mscore) VALUES (?, ?, ?, ?, ?)";
+            final PreparedStatement pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            pst.setString(1, login);
+            pst.setString(2, email);
+            pst.setString(3, password);
+            pst.setInt(4, sScore);
+            pst.setInt(5, mScore);
+            return pst;
+        }, idHolder);
+        final Map<String, Object> keys = idHolder.getKeys();
+        if (keys.size() > 1) {
+            // postgres
+            return ((Integer) keys.get("id")).longValue();
+        } else {
+            // h2
+            return idHolder.getKey().longValue();
         }
     }
 

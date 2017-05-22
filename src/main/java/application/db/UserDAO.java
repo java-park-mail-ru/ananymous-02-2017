@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface UserDAO {
-    @Nullable
+    @NotNull
     Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore);
 
     @Nullable

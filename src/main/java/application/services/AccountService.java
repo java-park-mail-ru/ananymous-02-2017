@@ -32,7 +32,7 @@ public class AccountService{
         return user != null && doCheckPassword(user, password);
     }
 
-    public @Nullable Long addUser(@NotNull UserRequest user) {
+    public @NotNull Long addUser(@NotNull UserRequest user) {
         final String encodedPassword = encoder.encode(user.getPassword());
         return db.add(user.getLogin(), user.getEmail(), encodedPassword, 0, 0);
     }
