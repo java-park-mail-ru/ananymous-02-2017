@@ -1,24 +1,27 @@
 package application.mechanics.handlers;
 
 import application.mechanics.requests.Disconnect;
+import application.websocket.GameSocketHandler;
 import application.websocket.HandleException;
 import application.websocket.MessageHandler;
 import application.websocket.MessageHandlerContainer;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MyHandler extends MessageHandler<String> {
-    private final MessageHandlerContainer messageHandlerContainer;
+    @NotNull
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyHandler.class.getSimpleName());
 
     @Override
     public void handle(@NotNull String message, @NotNull Long forUser) throws HandleException {
-        System.out.println(message);
+        LOGGER.info("MyHandler. " + message);
     }
 
     public MyHandler(@NotNull MessageHandlerContainer messageHandlerContainer) {
         super(String.class);
-        this.messageHandlerContainer = messageHandlerContainer;
         messageHandlerContainer.registerHandler(clazz, this);
     }
 

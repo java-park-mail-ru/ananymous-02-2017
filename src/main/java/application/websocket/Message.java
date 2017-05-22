@@ -4,9 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class Message {
     @NotNull
-    private final String type;
+    private String type;
     @NotNull
-    private final String data;
+    private String data;
 
     // TODO remove this if possible
     @NotNull

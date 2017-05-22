@@ -17,7 +17,6 @@ public class GameMessageHandlerContainer implements MessageHandlerContainer {
 
     @Override
     public void handle(@NotNull Message message, @NotNull Long forUser) throws HandleException {
-
         final Class clazz;
         try {
             clazz = Class.forName(message.getType());

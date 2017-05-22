@@ -5,6 +5,10 @@ Game.connect = (function () {
 
     Game.socket.onopen = function () {
         console.log('Info: WebSocket connection opened.');
+        var resp = {};
+        resp.type = "java.lang.String";
+        resp.data = "Hello!";
+        Game.socket.send(JSON.stringify(resp));
     };
 
     Game.socket.onclose = function () {
@@ -17,15 +21,10 @@ Game.connect = (function () {
         console.log("Info: onmessage");
 
         if (message.type === "java.lang.String") {
-            console.log(JSON.parse(message.content));
+            console.log(message);
+            console.log(message.data === "Hello!");
         }
     };
-
-    var resp = {};
-    resp.type = "java.lang.String";
-    resp.content = JSON.stringify("Hello!");
-    console.log(Game.socket);
-    Game.socket.send(JSON.stringify(resp));
 });
 
 Game.connect();
