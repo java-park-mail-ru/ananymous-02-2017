@@ -102,10 +102,4 @@ public class SessionController extends BaseController {
         }
         return ResponseEntity.ok(new FullUserResponse(user));
     }
-
-    @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity alreadyExist() {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new MessageResponse("User already exist"));
-    }
 }
