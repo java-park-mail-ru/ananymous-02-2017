@@ -1,10 +1,12 @@
 package application.db;
 
 import application.models.User;
+import application.utils.exceptions.GeneratedKeyException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -26,7 +28,8 @@ public class UserDAOImpl implements UserDAO{
     private JdbcTemplate template;
 
     @Override
-    public @NotNull Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore) {
+    public @NotNull Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore)
+            throws GeneratedKeyException {
         final KeyHolder idHolder = new GeneratedKeyHolder();
         template.update(con -> {
             final String query = "INSERT INTO users (login, email, password, sscore, mscore) VALUES (?, ?, ?, ?, ?)";
@@ -39,12 +42,16 @@ public class UserDAOImpl implements UserDAO{
             return pst;
         }, idHolder);
         final Map<String, Object> keys = idHolder.getKeys();
-        if (keys.size() > 1) {
-            // postgres
-            return ((Integer) keys.get("id")).longValue();
-        } else {
-            // h2
-            return idHolder.getKey().longValue();
+        try {
+            if (keys.size() > 1) {
+                // postgres
+                return ((Integer) keys.get("id")).longValue();
+            } else {
+                // h2
+                return idHolder.getKey().longValue();
+            }
+        } catch (NullPointerException e) {
+            throw new GeneratedKeyException("Can't get id from insert request", e);
         }
     }
 

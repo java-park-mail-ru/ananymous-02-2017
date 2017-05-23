@@ -26,16 +26,17 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public ResponseEntity databaseError() {
+    public ResponseEntity databaseError(@NotNull Exception e) {
+        LOGGER.error("Some problems with database", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new MessageResponse("There was an error with the database, try again later"));
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity nullPointerException(@NotNull NullPointerException e) {
-        LOGGER.error("Error", e);
+    @ExceptionHandler(GeneratedKeyException.class)
+    public ResponseEntity getKeyError(@NotNull GeneratedKeyException e) {
+        LOGGER.error("Database changes method of getting generated key", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new MessageResponse("There was an internal error, try again later"));
+                .body(new MessageResponse("User was registered, but there was a problem in getting id"));
     }
 }
 
