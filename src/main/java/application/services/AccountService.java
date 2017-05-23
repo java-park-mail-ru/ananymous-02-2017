@@ -2,6 +2,7 @@ package application.services;
 
 import application.db.UserDAO;
 import application.models.User;
+import application.utils.exceptions.GeneratedKeyException;
 import application.utils.requests.UserRequest;
 import application.utils.responses.FullUserResponse;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ public class AccountService{
         return user != null && doCheckPassword(user, password);
     }
 
-    public @NotNull Long addUser(@NotNull UserRequest user) {
+    public @NotNull Long addUser(@NotNull UserRequest user) throws GeneratedKeyException {
         final String encodedPassword = encoder.encode(user.getPassword());
         return db.add(user.getLogin(), user.getEmail(), encodedPassword, 0, 0);
     }

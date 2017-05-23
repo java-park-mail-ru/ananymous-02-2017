@@ -1,6 +1,7 @@
 package application.db;
 
 import application.models.User;
+import application.utils.exceptions.GeneratedKeyException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public interface UserDAO {
     @NotNull
-    Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore);
+    Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore) throws GeneratedKeyException;
 
     @Nullable
     User getUser(@NotNull Long id);
