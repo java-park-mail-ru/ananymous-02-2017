@@ -1,16 +1,11 @@
 package application.websocket;
 
 import application.controllers.BaseController;
-import application.mechanics.requests.Disconnect;
-import application.mechanics.requests.JoinGame;
-import application.models.User;
 import application.services.AccountService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.jetty.websocket.api.WebSocketException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,23 +81,17 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
         final Message message;
         try {
-            // TODO fix
-            final ObjectNode node = objectMapper.readValue(textMessage.getPayload(), ObjectNode.class);
-//            message = objectMapper.readValue(textMessage.getPayload(), Message.class);
-            message = new Message(node.get("type").asText(), node.get("data").toString());
+            message = objectMapper.readValue(textMessage.getPayload(), Message.class);
         } catch (JsonParseException | JsonMappingException e) {
-            LOGGER.info("Couldn't parse JSON, message: " + textMessage.getPayload());
+            LOGGER.error("Couldn't parse JSON, message: " + textMessage.getPayload());
             return;
-        } catch (IOException ex) {
-            LOGGER.error("wrong json format at ping response", ex);
+        } catch (IOException e) {
+            LOGGER.error("Some problems while parsing message", e);
             return;
         }
 
-        LOGGER.info("message: " + message.getType() + ", " + message.getData());
-
         try {
 //            messageHandlerContainer.handle(message, userId);
-            LOGGER.info("try handle in container");
             messageHandlerContainer.handle(message, 42L);
         } catch (HandleException e) {
             LOGGER.error("Can't handle message of type " + message.getType() + " with content: " + message.getData(), e);
@@ -111,20 +100,17 @@ public class GameSocketHandler extends TextWebSocketHandler {
         final WebSocketMessage<String> webSocketMessage;
         try {
             webSocketMessage = new TextMessage(objectMapper.writeValueAsString(message));
-            LOGGER.info("webSocketMessage: " + webSocketMessage.getPayload());
         } catch (JsonProcessingException e) {
-            LOGGER.info("beda, JsonProcessingException");
+            LOGGER.error("Can't write message to JSON. type: " + message.getType() + ", data: " + message.getData());
             return;
         }
         try {
             session.sendMessage(webSocketMessage);
-        } catch (JsonProcessingException | WebSocketException e) {
-            LOGGER.info("beda, JsonProcessingException | WebSocketException");
-            return;
         } catch (IOException e) {
-            LOGGER.info("beda, IOException");
-            return;
+            LOGGER.error("Can't send web socket message: " + webSocketMessage.getPayload(), e);
+            e.printStackTrace();
         }
+
     }
 
     @Override

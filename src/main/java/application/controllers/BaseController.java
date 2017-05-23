@@ -1,17 +1,16 @@
 package application.controllers;
 
 import application.services.AccountService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 
 public class BaseController {
     @NotNull
-    protected final AccountService accountService;
     public static final String USER_ID = "userId";
+    @NotNull
+    protected final AccountService accountService;
 
-    public BaseController(AccountService accountService) {
+    public BaseController(@NotNull AccountService accountService) {
         this.accountService = accountService;
     }
 }

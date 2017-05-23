@@ -8,6 +8,7 @@ import application.utils.requests.UsernameRequest;
 import application.utils.responses.FullUserResponse;
 import application.utils.responses.IdResponse;
 import application.utils.responses.MessageResponse;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
@@ -47,8 +47,6 @@ public class SessionController extends BaseController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new MessageResponse(String.format("User %s already exist", body.getLogin())));
         }
-
-//        LOGGER.debug();
 
         httpSession.setAttribute(USER_ID, id);
         return ResponseEntity.ok(new IdResponse(id));

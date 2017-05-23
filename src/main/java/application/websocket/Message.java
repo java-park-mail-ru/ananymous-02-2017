@@ -1,13 +1,11 @@
 package application.websocket;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Message {
-    @NotNull
-    private String type;
-    @NotNull
-    private String data;
-
     // TODO remove this if possible
     @NotNull
     public static final String INITIALIZE_USER = "InitializePlayer";
@@ -16,25 +14,39 @@ public class Message {
     @NotNull
     public static final String REMOVE_USER = "RemovePlayer";
 
-    @NotNull
-    public String getType() {
-        return type;
-    }
-    @NotNull
-    public String getData() {
-        return data;
+    @Nullable
+    private String type;
+    @Nullable
+    private String data;
+
+    public Message() {
     }
 
-    // TODO check for necessity
-//    public Message() {
-//    }
-
-    public Message(@NotNull String type, @NotNull String data) {
+    @JsonCreator
+    public Message(@JsonProperty("type") @NotNull String type,
+                   @JsonProperty("data") @NotNull String data) {
         this.type = type;
         this.data = data;
     }
 
     public Message(@NotNull Class clazz, @NotNull String data) {
         this(clazz.getName(), data);
+    }
+
+    @Nullable
+    public String getType() {
+        return type;
+    }
+    @Nullable
+    public String getData() {
+        return data;
+    }
+
+    public void setType(@NotNull String type) {
+        this.type = type;
+    }
+
+    public void setData(@NotNull String data) {
+        this.data = data;
     }
 }

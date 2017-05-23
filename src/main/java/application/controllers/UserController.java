@@ -7,13 +7,13 @@ import application.utils.requests.PasswordRequest;
 import application.utils.requests.ScoreRequest;
 import application.utils.responses.FullUserResponse;
 import application.utils.responses.MessageResponse;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
@@ -37,7 +37,6 @@ public class UserController extends BaseController {
         }
         return ResponseEntity.ok(new FullUserResponse(user));
     }
-
 
     @GetMapping(path = "/users", produces = "application/json")
     public ResponseEntity getBestUsers(@RequestParam(value = "page", defaultValue = "0") int page)
@@ -83,10 +82,10 @@ public class UserController extends BaseController {
 
     @PostMapping(path = "/score", consumes = "application/json", produces = "application/json")
     public ResponseEntity addScore(@RequestBody ScoreRequest body) {
-        final boolean success = accountService.addScore(body.getLogin(), body.getsScore(), body.getmScore());
+        final boolean success = accountService.addScore(body.getId(), body.getsScore(), body.getmScore());
         if (!success) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new MessageResponse(String.format("login: %s, user not found", body.getLogin())));
+                    .body(new MessageResponse(String.format("id: %s, user not found", body.getId())));
         }
         return ResponseEntity.ok(new MessageResponse("Success"));
     }

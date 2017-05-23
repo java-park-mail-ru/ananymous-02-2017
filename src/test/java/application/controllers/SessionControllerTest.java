@@ -2,6 +2,7 @@ package application.controllers;
 
 import application.services.AccountService;
 import application.utils.requests.UserRequest;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.After;
 import org.junit.Assert;
@@ -14,7 +15,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RunWith(SpringRunner.class)

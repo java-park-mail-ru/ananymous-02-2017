@@ -1,7 +1,5 @@
 package application.mechanics.handlers;
 
-import application.mechanics.requests.Disconnect;
-import application.websocket.GameSocketHandler;
 import application.websocket.HandleException;
 import application.websocket.MessageHandler;
 import application.websocket.MessageHandlerContainer;
