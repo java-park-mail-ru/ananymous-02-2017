@@ -3,6 +3,7 @@ package application.controllers;
 import application.models.User;
 import application.services.AccountService;
 import application.utils.Validator;
+import application.utils.exceptions.GeneratedKeyException;
 import application.utils.requests.UserRequest;
 import application.utils.requests.UsernameRequest;
 import application.utils.responses.FullUserResponse;
@@ -31,8 +32,7 @@ public class SessionController extends BaseController {
     }
 
     @PostMapping(path = "/signup", consumes = "application/json", produces = "application/json")
-    public ResponseEntity signup(@RequestBody UserRequest body, HttpSession httpSession)
-    {
+    public ResponseEntity signup(@RequestBody UserRequest body, HttpSession httpSession) throws GeneratedKeyException {
         final String error = Validator.getUserError(body);
 
         if (error != null) {
