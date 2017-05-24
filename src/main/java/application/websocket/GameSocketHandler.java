@@ -87,6 +87,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         try {
             final ObjectNode node = objectMapper.readValue(textMessage.getPayload(), ObjectNode.class);
             message = new Message(node.get("type").asText(), node.get("data").toString());
+            // TODO why doesn't working
 //            message = objectMapper.readValue(textMessage.getPayload(), Message.class);
         } catch (JsonParseException | JsonMappingException e) {
             LOGGER.error("Couldn't parse JSON, message: " + textMessage.getPayload());
@@ -96,31 +97,11 @@ public class GameSocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        LOGGER.info("INCOMING MESSAGE: " + "type: " + message.getType() + ", data: " + message.getData());
-
         try {
-            // TODO return old one
-//            messageHandlerContainer.handle(message, userId);
-            messageHandlerContainer.handle(message, 42L);
+            messageHandlerContainer.handle(message, userId);
         } catch (HandleException e) {
             LOGGER.error("Can't handle message of type " + message.getType() + " with content: " + message.getData(), e);
         }
-
-        final WebSocketMessage<String> webSocketMessage;
-        try {
-            webSocketMessage = new TextMessage(objectMapper.writeValueAsString(message));
-            LOGGER.info("OUTCOMING MESSAGE: " + webSocketMessage.getPayload());
-        } catch (JsonProcessingException e) {
-            LOGGER.error("Can't write message to JSON. type: " + message.getType() + ", data: " + message.getData());
-            return;
-        }
-        try {
-            session.sendMessage(webSocketMessage);
-        } catch (IOException e) {
-            LOGGER.error("Can't send web socket message: " + webSocketMessage.getPayload(), e);
-            e.printStackTrace();
-        }
-
     }
 
     @Override
