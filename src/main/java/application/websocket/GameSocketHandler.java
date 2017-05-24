@@ -105,7 +105,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
         final WebSocketMessage<String> webSocketMessage;
         try {
-            webSocketMessage = new TextMessage(objectMapper.writeValueAsString(message));
+            webSocketMessage = new TextMessage(objectMapper.writeValueAsString(message.getData()));
             LOGGER.info("OUTCOMING MESSAGE: " + webSocketMessage.getPayload());
         } catch (JsonProcessingException e) {
             LOGGER.error("Can't write message to JSON. type: " + message.getType() + ", data: " + message.getData());
