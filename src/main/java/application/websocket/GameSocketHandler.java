@@ -93,6 +93,8 @@ public class GameSocketHandler extends TextWebSocketHandler {
             return;
         }
 
+        LOGGER.info("INCOMING MESSAGE: " + "type: " + message.getType() + ", data: " + message.getData());
+
         try {
             // TODO return old one
 //            messageHandlerContainer.handle(message, userId);
@@ -104,6 +106,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         final WebSocketMessage<String> webSocketMessage;
         try {
             webSocketMessage = new TextMessage(objectMapper.writeValueAsString(message));
+            LOGGER.info("OUTCOMING MESSAGE: " + webSocketMessage.getPayload());
         } catch (JsonProcessingException e) {
             LOGGER.error("Can't write message to JSON. type: " + message.getType() + ", data: " + message.getData());
             return;
