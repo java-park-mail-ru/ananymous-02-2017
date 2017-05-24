@@ -45,4 +45,8 @@ public class UserSnap {
         this.firing = firing;
     }
 
+    @Override
+    public String toString() {
+        return "{id:" + id + ",position:" + position.toString() + ",camera:" + camera.toString() + ",firing:" + firing + '}';
+    }
 }

@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class RemotePointService {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(RemotePointService.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemotePointService.class.getSimpleName());
 
     @NotNull
     private final Map<Long, WebSocketSession> sessions = new ConcurrentHashMap<>();

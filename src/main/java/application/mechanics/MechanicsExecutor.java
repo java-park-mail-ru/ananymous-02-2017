@@ -8,6 +8,8 @@ import application.services.AccountService;
 import application.websocket.RemotePointService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,10 @@ import java.util.concurrent.ThreadFactory;
 
 @Service
 public class MechanicsExecutor {
+    // TODO make all loggers with simple name
+    @NotNull
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemotePointService.class.getSimpleName());
+
     // TODO fix autowired
     @Autowired
     @NotNull
@@ -80,8 +86,10 @@ public class MechanicsExecutor {
     }
 
     public void addClientSnapshot(long forUser, UserSnap message) {
+        LOGGER.info("CLIENT SNAPSHOT for user {}, message : {}", forUser, message.toString());
         for (GameMechanics gameMechanic: gameMechanics) {
             if (gameMechanic.isPlaying(forUser)) {
+                LOGGER.info("User {} is playing", forUser);
                 gameMechanic.addClientSnapshot(forUser, message);
                 return;
             }

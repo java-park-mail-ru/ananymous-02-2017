@@ -34,4 +34,9 @@ public class Coordinates {
         final double dz = (this.z - other.z) * (this.z - other.z);
         return Math.sqrt(dx + dy + dz);
     }
+
+    @Override
+    public String toString() {
+        return "{x:" + x + ",y:" + y + ",z:" + z + '}';
+    }
 }
