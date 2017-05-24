@@ -86,10 +86,11 @@ public class MechanicsExecutor {
     }
 
     public void addClientSnapshot(long forUser, UserSnap message) {
-        LOGGER.info("CLIENT SNAPSHOT for user {}, message : {}", forUser, message.toString());
+        LOGGER.info("CLIENT SNAPSHOT for user with id: {}, message : id - {}, position - {}, camera - {}, firing - {}", forUser,
+                message.getId(), message.getPosition(), message.getCamera(), message.isFiring());
         for (GameMechanics gameMechanic: gameMechanics) {
             if (gameMechanic.isPlaying(forUser)) {
-                LOGGER.info("User {} is playing", forUser);
+                LOGGER.info("User with id {} is playing", forUser);
                 gameMechanic.addClientSnapshot(forUser, message);
                 return;
             }
