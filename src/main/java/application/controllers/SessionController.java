@@ -3,19 +3,21 @@ package application.controllers;
 import application.models.User;
 import application.services.AccountService;
 import application.utils.Validator;
+import application.utils.exceptions.GeneratedKeyException;
 import application.utils.requests.UserRequest;
 import application.utils.requests.UsernameRequest;
 import application.utils.responses.FullUserResponse;
 import application.utils.responses.IdResponse;
 import application.utils.responses.MessageResponse;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @CrossOrigin/*(origins = {"https:/soul-hunting.ru", "localhost"})*/
@@ -30,8 +32,7 @@ public class SessionController extends BaseController {
     }
 
     @PostMapping(path = "/signup", consumes = "application/json", produces = "application/json")
-    public ResponseEntity signup(@RequestBody UserRequest body, HttpSession httpSession)
-    {
+    public ResponseEntity signup(@RequestBody UserRequest body, HttpSession httpSession) throws GeneratedKeyException {
         final String error = Validator.getUserError(body);
 
         if (error != null) {
@@ -43,12 +44,6 @@ public class SessionController extends BaseController {
         }
 
         final Long id = accountService.addUser(body);
-        if (id == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new MessageResponse(String.format("User %s already exist", body.getLogin())));
-        }
-
-//        LOGGER.debug();
 
         httpSession.setAttribute(USER_ID, id);
         return ResponseEntity.ok(new IdResponse(id));
@@ -105,6 +100,6 @@ public class SessionController extends BaseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse(String.format("id: %s, bad cookies", id)));
         }
-        return ResponseEntity.ok(new FullUserResponse(id, user.getLogin(), user.getEmail()));
+        return ResponseEntity.ok(new FullUserResponse(user));
     }
 }

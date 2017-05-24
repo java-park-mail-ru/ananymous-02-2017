@@ -1,11 +1,12 @@
 package application.db;
 
 import application.models.User;
+import application.utils.exceptions.GeneratedKeyException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -27,18 +28,21 @@ public class UserDAOImpl implements UserDAO{
     private JdbcTemplate template;
 
     @Override
-    public @Nullable Long add(@NotNull String login, @NotNull String email, @NotNull String password) {
+    public @NotNull Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore)
+            throws GeneratedKeyException {
+        final KeyHolder idHolder = new GeneratedKeyHolder();
+        template.update(con -> {
+            final String query = "INSERT INTO users (login, email, password, sscore, mscore) VALUES (?, ?, ?, ?, ?)";
+            final PreparedStatement pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            pst.setString(1, login);
+            pst.setString(2, email);
+            pst.setString(3, password);
+            pst.setInt(4, sScore);
+            pst.setInt(5, mScore);
+            return pst;
+        }, idHolder);
+        final Map<String, Object> keys = idHolder.getKeys();
         try {
-            final KeyHolder idHolder = new GeneratedKeyHolder();
-            template.update(con -> {
-                final String query = "INSERT INTO users (login, email, password) VALUES (?, ?, ?)";
-                final PreparedStatement pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                pst.setString(1, login);
-                pst.setString(2, email);
-                pst.setString(3, password);
-                return pst;
-            }, idHolder);
-            final Map<String, Object> keys = idHolder.getKeys();
             if (keys.size() > 1) {
                 // postgres
                 return ((Integer) keys.get("id")).longValue();
@@ -46,8 +50,8 @@ public class UserDAOImpl implements UserDAO{
                 // h2
                 return idHolder.getKey().longValue();
             }
-        } catch (DuplicateKeyException e) {
-            return null;
+        } catch (NullPointerException e) {
+            throw new GeneratedKeyException("Can't get id from insert request", e);
         }
     }
 
@@ -62,14 +66,25 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public boolean hasUser(@NotNull Long id) {
-        return getUser(id) != null;
+    public void editUser(@NotNull Long id, @Nullable String newLogin, @Nullable String newEmail, @Nullable String newPassword,
+                         @Nullable Integer newSScore, @Nullable Integer newMScore) {
+        String query = "UPDATE users SET " +
+                "login = COALESCE (?, login), " +
+                "email = COALESCE (?, email), " +
+                "password = COALESCE (?, password), " +
+                "sscore = COALESCE (?, sscore), " +
+                "mscore = COALESCE (?, mscore) " +
+                "WHERE id = ?";
+        template.update(query, newLogin, newEmail, newPassword, newSScore, newMScore, id);
     }
 
     @Override
-    public void editUserPassword(@NotNull User user, @NotNull String password) {
-        final String query = "UPDATE users SET password = ? WHERE id = ?";
-        template.update(query, password, user.getId());
+    public void addScore(@NotNull Long id, int sScore, int mScore) {
+        String query = "UPDATE users SET " +
+                "sscore = sscore + ?, " +
+                "mscore = mscore + ?" +
+                "WHERE id = ?";
+        template.update(query, sScore, mScore, id);
     }
 
     @Override
@@ -83,14 +98,16 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public @NotNull List<User> getUsers(int beg, int size) {
-        final String query = "SELECT * FROM users LIMIT ? OFFSET ?";
+    public @NotNull List<User> getBestUsers(int beg, int size) {
+        final String query = "SELECT u.* FROM users u JOIN " +
+                "(SELECT id FROM users u ORDER BY sScore DESC LIMIT ? OFFSET ?) j ON (j.id = u.id)" +
+                " ORDER BY sScore DESC";
         return template.query(query, USER_ROW_MAPPER, size, beg);
     }
 
     @Override
-    public @NotNull List<User> getUsers() {
-        final String query = "SELECT * FROM users";
+    public @NotNull List<User> getBestUsers() {
+        final String query = "SELECT * FROM users ORDER BY sScore DESC";
         return template.query(query, USER_ROW_MAPPER);
     }
 
@@ -104,6 +121,8 @@ public class UserDAOImpl implements UserDAO{
         String login = resultSet.getString("login");
         String email = resultSet.getString("email");
         String password = resultSet.getString("password");
-        return new User(id, login, email, password);
+        int sscore = resultSet.getInt("sscore");
+        int mscore = resultSet.getInt("mscore");
+        return new User(id, login, email, password, sscore, mscore);
     };
 }

@@ -1,31 +1,32 @@
 package application.db;
 
 import application.models.User;
+import application.utils.exceptions.GeneratedKeyException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 
 public interface UserDAO {
-    @Nullable
-    Long add(@NotNull String login, @NotNull String email, @NotNull String password);
+    @NotNull
+    Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore) throws GeneratedKeyException;
 
     @Nullable
     User getUser(@NotNull Long id);
 
-    boolean hasUser(@NotNull Long id);
+    void editUser(@NotNull Long id, @Nullable String login, @Nullable String email, @Nullable String password,
+                  @Nullable Integer sScore, @Nullable Integer mScore);
 
-    void editUserPassword(@NotNull User user, @NotNull String password);
+    void addScore(@NotNull Long id, int sScore, int mScore);
 
     @Nullable
     Long getUserID(@NotNull String username);
 
     @NotNull
-    List<User> getUsers(int beg, int size);
+    List<User> getBestUsers(int beg, int size);
 
     @NotNull
-    List<User> getUsers();
+    List<User> getBestUsers();
 
     void clear();
 }

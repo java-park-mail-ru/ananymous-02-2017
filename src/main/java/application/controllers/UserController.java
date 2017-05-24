@@ -4,6 +4,7 @@ import application.models.User;
 import application.services.AccountService;
 import application.utils.Validator;
 import application.utils.requests.PasswordRequest;
+import application.utils.requests.ScoreRequest;
 import application.utils.responses.FullUserResponse;
 import application.utils.responses.MessageResponse;
 import org.springframework.http.HttpStatus;
@@ -34,18 +35,18 @@ public class UserController extends BaseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse(String.format("id: %s, user not found", id)));
         }
-        return ResponseEntity.ok(new FullUserResponse(user.getId(), user.getLogin(), user.getEmail()));
+        return ResponseEntity.ok(new FullUserResponse(user));
     }
 
     @GetMapping(path = "/users", produces = "application/json")
-    public ResponseEntity getUsers(@RequestParam(value = "page", defaultValue = "0") int page)
+    public ResponseEntity getBestUsers(@RequestParam(value = "page", defaultValue = "0") int page)
     {
         if (page < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Invalid page number"));
         } else if (page == 0) {
-            return ResponseEntity.ok(accountService.getUsers());
+            return ResponseEntity.ok(accountService.getBestUsers());
         } else {
-            return ResponseEntity.ok(accountService.getUsers((page - 1) * USERS_ON_PAGE, USERS_ON_PAGE));
+            return ResponseEntity.ok(accountService.getBestUsers((page - 1) * USERS_ON_PAGE, USERS_ON_PAGE));
         }
     }
 
@@ -75,6 +76,16 @@ public class UserController extends BaseController {
         if (!isSuccess) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new MessageResponse(String.format("id: %s, wrong password", id)));
+        }
+        return ResponseEntity.ok(new MessageResponse("Success"));
+    }
+
+    @PostMapping(path = "/score", consumes = "application/json", produces = "application/json")
+    public ResponseEntity addScore(@RequestBody ScoreRequest body) {
+        final boolean success = accountService.addScore(body.getLogin(), body.getsScore(), body.getmScore());
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageResponse(String.format("login: %s, user not found", body.getLogin())));
         }
         return ResponseEntity.ok(new MessageResponse("Success"));
     }
