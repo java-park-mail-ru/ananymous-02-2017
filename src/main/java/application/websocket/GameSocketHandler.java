@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,9 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
         final Message message;
         try {
-            message = objectMapper.readValue(textMessage.getPayload(), Message.class);
+            final ObjectNode node = objectMapper.readValue(textMessage.getPayload(), ObjectNode.class);
+            message = new Message(node.get("type").asText(), node.get("data").toString());
+//            message = objectMapper.readValue(textMessage.getPayload(), Message.class);
         } catch (JsonParseException | JsonMappingException e) {
             LOGGER.error("Couldn't parse JSON, message: " + textMessage.getPayload());
             return;
