@@ -1,6 +1,9 @@
 package application.websocket;
 
 import application.controllers.BaseController;
+import application.mechanics.requests.Disconnect;
+import application.mechanics.requests.JoinGame;
+import application.models.User;
 import application.services.AccountService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,39 +49,39 @@ public class GameSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession webSocketSession) throws AuthenticationException {
         LOGGER.info("ConnectionEstablished");
-//        final Long id = (Long) webSocketSession.getAttributes().get(USER_ID);
-//        final User user;
-//        if (id == null || (user = accountService.getUser(id)) == null) {
-//            LOGGER.error("Only authenticated users allowed to play a game!");
-//            return;
-//        }
-//
-//        if (remotePointService.get(id) != null) {
-//            LOGGER.error("You are already playing");
-//            return;
-//        }
-//        LOGGER.info("New user {} #{}", user.getLogin(), user.getId());
-//        remotePointService.registerUser(user.getId(), webSocketSession);
-//        sendIdToClient(webSocketSession, user.getId());
-//
-//        final Message message = new Message(JoinGame.Request.class, "{}");
-//        try {
-//            messageHandlerContainer.handle(message, user.getId());
-//        }
-//        catch (HandleException e) {
-//            LOGGER.error("Can't handle message while handshaking");
-//        }
+        final Long id = (Long) webSocketSession.getAttributes().get(USER_ID);
+        final User user;
+        if (id == null || (user = accountService.getUser(id)) == null) {
+            LOGGER.error("Only authenticated users allowed to play a game!");
+            return;
+        }
+
+        if (remotePointService.get(id) != null) {
+            LOGGER.error("You are already playing");
+            return;
+        }
+        LOGGER.info("New user {} #{}", user.getLogin(), user.getId());
+        remotePointService.registerUser(user.getId(), webSocketSession);
+        sendIdToClient(webSocketSession, user.getId());
+
+        final Message message = new Message(JoinGame.Request.class, "{}");
+        try {
+            messageHandlerContainer.handle(message, user.getId());
+        }
+        catch (HandleException e) {
+            LOGGER.error("Can't handle message while handshaking");
+        }
     }
 
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session,
                                      @NotNull TextMessage textMessage) throws AuthenticationException {
-//        final Long userId = (Long) session.getAttributes().get(USER_ID);
-//        if (userId == null || accountService.getUser(userId) == null) {
-//            // TODO
-//            // throw new AuthenticationException("Only authenticated users allowed to play a game");
-//            return;
-//        }
+        final Long userId = (Long) session.getAttributes().get(USER_ID);
+        if (userId == null || accountService.getUser(userId) == null) {
+            // TODO
+            // throw new AuthenticationException("Only authenticated users allowed to play a game");
+            return;
+        }
 
         final Message message;
         try {
@@ -105,7 +108,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
         final WebSocketMessage<String> webSocketMessage;
         try {
-            webSocketMessage = new TextMessage(objectMapper.writeValueAsString(message.getData()));
+            webSocketMessage = new TextMessage(objectMapper.writeValueAsString(message));
             LOGGER.info("OUTCOMING MESSAGE: " + webSocketMessage.getPayload());
         } catch (JsonProcessingException e) {
             LOGGER.error("Can't write message to JSON. type: " + message.getType() + ", data: " + message.getData());
@@ -130,22 +133,22 @@ public class GameSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(@NotNull WebSocketSession webSocketSession,
                                       @NotNull CloseStatus closeStatus) throws Exception {
         LOGGER.info("ConnectionClosed");
-//        final Long userId = (Long) webSocketSession.getAttributes().get(USER_ID);
-//        if (userId == null) {
-//            LOGGER.warn("User disconnected but his session was not found (closeStatus=" + closeStatus + ')');
-//            return;
-//        }
-//
-//        if (remotePointService.contains(webSocketSession)) {
-//            remotePointService.removeUser(userId);
-//
-//            final Message message = new Message(Disconnect.Request.class, "{}");
-//            try {
-//                messageHandlerContainer.handle(message, userId);
-//            } catch (HandleException e) {
-//                LOGGER.error("Can't remove user from game");
-//            }
-//        }
+        final Long userId = (Long) webSocketSession.getAttributes().get(USER_ID);
+        if (userId == null) {
+            LOGGER.warn("User disconnected but his session was not found (closeStatus=" + closeStatus + ')');
+            return;
+        }
+
+        if (remotePointService.contains(webSocketSession)) {
+            remotePointService.removeUser(userId);
+
+            final Message message = new Message(Disconnect.Request.class, "{}");
+            try {
+                messageHandlerContainer.handle(message, userId);
+            } catch (HandleException e) {
+                LOGGER.error("Can't remove user from game");
+            }
+        }
     }
 
     @SuppressWarnings("OverlyBroadCatchBlock")
