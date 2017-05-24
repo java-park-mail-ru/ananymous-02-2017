@@ -2,6 +2,7 @@ package application.mechanics.base;
 
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("ClassNamingConvention")
 public class Ray {
     @NotNull
     private MyVector vector;

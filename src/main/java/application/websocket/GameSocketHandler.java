@@ -91,6 +91,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         }
 
         try {
+            // TODO return old one
 //            messageHandlerContainer.handle(message, userId);
             messageHandlerContainer.handle(message, 42L);
         } catch (HandleException e) {

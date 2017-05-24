@@ -110,7 +110,7 @@ public class ClientSnapService {
                 LOGGER.info("Shot in target");
                 final double shotLenght = distance / cos;
                 final double distanceFromEnemyCenter =
-                        Math.sqrt(shotLenght*shotLenght - distance*distance);
+                        Math.sqrt(shotLenght * shotLenght - distance * distance);
                 
                 damageCoeff = (RADIUS - distanceFromEnemyCenter) / RADIUS;
                 if (damageCoeff < DAMAGE_COEFF_MIN) {

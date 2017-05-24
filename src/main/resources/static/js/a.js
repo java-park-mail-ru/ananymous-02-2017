@@ -1,7 +1,8 @@
 var Game = {};
 Game.connect = (function () {
     console.log("connect");
-    Game.socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/game");
+    // Game.socket = new WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/game");
+    Game.socket = new WebSocket("ws://" + "ananymous.herokuapp.com" + "/game");
 
     Game.socket.onopen = function () {
         console.log('Info: WebSocket connection opened.');

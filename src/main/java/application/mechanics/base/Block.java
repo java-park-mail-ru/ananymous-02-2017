@@ -19,6 +19,7 @@ public class Block {
     private double yRadius;
     private double zRadius;
 
+    // TODO remove if can
     public Block(@NotNull Coordinates center) {
         this.center = center;
     }
@@ -33,6 +34,7 @@ public class Block {
         zRadius = zLength / 2;
     }
 
+    // TODO remove getters and setters
     @NotNull
     public Coordinates getCenter() {
         return center;
@@ -109,14 +111,14 @@ public class Block {
 
     @Nullable
     private Coordinates getIntersectionPointWithX(@NotNull Ray ray) {
-        MyVector vector = ray.getVector();
-        Coordinates linePoint = ray.getPoint();
-        double plane = getClosestXPlane(ray.getPoint());  // Уравн. плоскости
-        double t = (plane - linePoint.x) / vector.getX();
+        final MyVector vector = ray.getVector();
+        final Coordinates linePoint = ray.getPoint();
+        final double plane = getClosestXPlane(ray.getPoint());
+        final double t = (plane - linePoint.x) / vector.getX();
 
-        double x = plane;
-        double y = vector.getY() * t + linePoint.y;
-        double z = vector.getZ() * t + linePoint.z;
+        final double x = plane;
+        final double y = vector.getY() * t + linePoint.y;
+        final double z = vector.getZ() * t + linePoint.z;
 
         if (vector.getX() >= 0 && x < linePoint.x || vector.getX() < 0 && x > linePoint.x) {
             return null;
@@ -127,28 +129,27 @@ public class Block {
 
     @NotNull
     private Coordinates getIntersectionPointWithY(Ray ray) {
-        MyVector vector = ray.getVector();
-        Coordinates linePoint = ray.getPoint();
-        double plane = getYPlane();  // Уравн. плоскости
-        double t = (plane - linePoint.y) / vector.getY();
+        final MyVector vector = ray.getVector();
+        final Coordinates linePoint = ray.getPoint();
+        final double plane = getYPlane();
+        final double t = (plane - linePoint.y) / vector.getY();
 
-        double y = plane;
-        double x = vector.getX() * t + linePoint.x;
-        double z = vector.getZ() * t + linePoint.z;
+        final double y = plane;
+        final double x = vector.getX() * t + linePoint.x;
+        final double z = vector.getZ() * t + linePoint.z;
         return new Coordinates(x, y, z);
     }
 
     @Nullable
     private Coordinates getIntersectionPointWithZ(Ray ray) {
-        MyVector vector = ray.getVector();
-        Coordinates linePoint = ray.getPoint();
-        double plane = getClosestZPlane(ray.getPoint());
-        double t = (plane - linePoint.z) / vector.getZ();
+        final MyVector vector = ray.getVector();
+        final Coordinates linePoint = ray.getPoint();
+        final double plane = getClosestZPlane(ray.getPoint());
+        final double t = (plane - linePoint.z) / vector.getZ();
 
-        double z = plane;
-        double y = vector.getY() * t + linePoint.y;
-        double x = vector.getX() * t + linePoint.x;
-
+        final double z = plane;
+        final double y = vector.getY() * t + linePoint.y;
+        final double x = vector.getX() * t + linePoint.x;
 
         if (vector.getZ() >= 0 && z < linePoint.z || vector.getZ() < 0 && z > linePoint.z) {
             return null;
@@ -156,8 +157,6 @@ public class Block {
 
         return new Coordinates(x, y, z);
     }
-
-
 
     private boolean isInside (Coordinates point) {
         if (point == null) {

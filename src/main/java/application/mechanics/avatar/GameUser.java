@@ -5,33 +5,41 @@ import application.mechanics.base.Coordinates;
 import application.mechanics.base.ServerPlayerSnap;
 import application.mechanics.base.VictimModel;
 import application.models.User;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.Null;
 import java.util.HashSet;
 import java.util.Set;
 
 public class GameUser {
+    @NotNull
     private final User user;
+    @NotNull
+    private final Set<VictimModel> victims = new HashSet<>();
 
+    @Nullable
     private Coordinates position;
     private int hp = 100;
     private boolean wasShot;
-    private final Set<VictimModel> victims = new HashSet<>();
 
     private int kills = 0;
     private int deaths = 0;
 
-    public GameUser(User user) {
+    public GameUser(@NotNull User user) {
         this.user = user;
     }
 
+    @NotNull
     public User getUser() {
         return user;
     }
 
-    public void setPosition(Coordinates coords) {
+    public void setPosition(@NotNull Coordinates coords) {
         this.position = coords;
     }
 
+    @Nullable
     public Coordinates getPosition() {
         return position;
     }
@@ -48,15 +56,17 @@ public class GameUser {
         }
     }
 
+    @NotNull
     public ServerPlayerSnap generateSnap() {
-        final ServerPlayerSnap result = new ServerPlayerSnap();
-        result.setUserId(getId());
-        result.setPosition(position);
-        result.setHp(hp);
-        result.setVictims(victims);
-        result.setKills(kills);
-        result.setDeaths(deaths);
-        result.setLogin(user.getLogin());
+        final ServerPlayerSnap result = new ServerPlayerSnap(
+                getId(),
+                position,
+                victims,
+                hp,
+                kills,
+                deaths,
+                user.getLogin()
+        );
         victims.clear();
         return result;
     }
@@ -74,7 +84,7 @@ public class GameUser {
         }
     }
 
-    public void addVictim (VictimModel victim) {
+    public void addVictim(@NotNull VictimModel victim) {
         victims.add(victim);
         kills++;
     }
@@ -100,7 +110,7 @@ public class GameUser {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

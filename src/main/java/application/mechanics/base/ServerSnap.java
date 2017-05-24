@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ServerSnap {
+    // TODO make this shoot
     private boolean shot;
     private int hp;
     private int kills;

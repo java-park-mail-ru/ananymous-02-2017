@@ -2,6 +2,7 @@ package application.mechanics.base;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,13 +17,29 @@ public class ServerPlayerSnap {
     private Long userId;
     @NotNull
     private String login;
-    @NotNull
+    @Nullable
     private Coordinates position;
     private int hp;
     private int kills;
     private int deaths;
 
-    @NotNull
+    public ServerPlayerSnap(@NotNull Long id,
+                            @Nullable Coordinates position,
+                            @NotNull Collection<VictimModel> victims,
+                            int hp,
+                            int kills,
+                            int deaths,
+                            @NotNull String login) {
+        this.userId = id;
+        this.position = position;
+        this.hp = hp;
+        this.victims.addAll(victims);
+        this.kills = kills;
+        this.deaths = deaths;
+        this.login = login;
+    }
+
+    @Nullable
     public Coordinates getPosition() {
         return position;
     }
