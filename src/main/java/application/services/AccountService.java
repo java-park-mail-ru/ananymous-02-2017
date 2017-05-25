@@ -3,6 +3,7 @@ package application.services;
 import application.db.UserDAO;
 import application.models.User;
 import application.utils.exceptions.GeneratedKeyException;
+import application.utils.exceptions.NotFoundException;
 import application.utils.requests.UserRequest;
 import application.utils.responses.FullUserResponse;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +76,7 @@ public class AccountService{
         db.clear();
     }
 
-    public boolean addScore(@NotNull Long id, int sScore, int mScore) {
+    public void addScore(@Nullable Long id, int sScore, int mScore) throws NotFoundException {
         if (sScore < 0) {
             sScore = 0;
         }
@@ -83,6 +84,5 @@ public class AccountService{
             mScore = 0;
         }
         db.addScore(id, sScore, mScore);
-        return true;
     }
 }

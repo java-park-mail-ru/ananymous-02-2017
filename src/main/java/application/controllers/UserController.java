@@ -3,6 +3,7 @@ package application.controllers;
 import application.models.User;
 import application.services.AccountService;
 import application.utils.Validator;
+import application.utils.exceptions.NotFoundException;
 import application.utils.requests.PasswordRequest;
 import application.utils.requests.ScoreRequest;
 import application.utils.responses.FullUserResponse;
@@ -81,12 +82,22 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(path = "/score", consumes = "application/json", produces = "application/json")
-    public ResponseEntity addScore(@RequestBody ScoreRequest body) {
-        final boolean success = accountService.addScore(body.getId(), body.getsScore(), body.getmScore());
-        if (!success) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new MessageResponse(String.format("id: %s, user not found", body.getId())));
+    public ResponseEntity addScore(@RequestBody ScoreRequest body) throws NotFoundException {
+        Long id = body.getId();
+        if (id == null) {
+            final String username = body.getUsername();
+            if (username == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new MessageResponse("No id and username"));
+            } else {
+                id = accountService.getUserID(username);
+                if (id == null) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(new MessageResponse(String.format("user %s not found", username)));
+                }
+            }
         }
+        accountService.addScore(id, body.getsScore(), body.getmScore());
         return ResponseEntity.ok(new MessageResponse("Success"));
     }
 }

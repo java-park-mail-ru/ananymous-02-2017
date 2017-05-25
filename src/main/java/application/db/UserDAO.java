@@ -2,6 +2,7 @@ package application.db;
 
 import application.models.User;
 import application.utils.exceptions.GeneratedKeyException;
+import application.utils.exceptions.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ public interface UserDAO {
     void editUser(@NotNull Long id, @Nullable String login, @Nullable String email, @Nullable String password,
                   @Nullable Integer sScore, @Nullable Integer mScore);
 
-    void addScore(@NotNull Long id, int sScore, int mScore);
+    void addScore(@Nullable Long id, int sScore, int mScore) throws NotFoundException;
 
     @Nullable
     Long getUserID(@NotNull String username);

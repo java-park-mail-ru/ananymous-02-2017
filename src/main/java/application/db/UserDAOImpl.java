@@ -2,6 +2,7 @@ package application.db;
 
 import application.models.User;
 import application.utils.exceptions.GeneratedKeyException;
+import application.utils.exceptions.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,12 +80,15 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public void addScore(@NotNull Long id, int sScore, int mScore) {
+    public void addScore(@Nullable Long id, int sScore, int mScore) throws NotFoundException {
         final String query = "UPDATE users SET " +
                 "sscore = sscore + ?, " +
                 "mscore = mscore + ?" +
                 "WHERE id = ?";
-        template.update(query, sScore, mScore, id);
+        final int updated = template.update(query, sScore, mScore, id);
+        if (updated == 0) {
+            throw new NotFoundException(id);
+        }
     }
 
     @Override
