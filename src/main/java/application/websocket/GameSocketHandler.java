@@ -80,23 +80,23 @@ public class GameSocketHandler extends TextWebSocketHandler {
         LOGGER.info("handleTextMessage");
         final Long userId = (Long) session.getAttributes().get(USER_ID);
 
-        Message m = new Message(Message.INITIALIZE_USER, String.valueOf(userId));
-        try {
-            LOGGER.info("INITIALIZE_USER");
-            final String json = objectMapper.writeValueAsString(m);
-            session.sendMessage(new TextMessage(json));
-        } catch (Exception e) {
-            LOGGER.error("Failed to send ID to user");
-        }
-
-        m = new Message(Message.SNAPSHOT, String.valueOf(userId));
-        try {
-            LOGGER.info("SNAPSHOT");
-            final String json = objectMapper.writeValueAsString(m);
-            session.sendMessage(new TextMessage(json));
-        } catch (Exception e) {
-            LOGGER.error("Failed to send ID to user");
-        }
+//        Message m = new Message(Message.INITIALIZE_USER, String.valueOf(userId));
+//        try {
+//            LOGGER.info("INITIALIZE_USER");
+//            final String json = objectMapper.writeValueAsString(m);
+//            session.sendMessage(new TextMessage(json));
+//        } catch (Exception e) {
+//            LOGGER.error("Failed to send ID to user");
+//        }
+//
+//        m = new Message(Message.SNAPSHOT, String.valueOf(userId));
+//        try {
+//            LOGGER.info("SNAPSHOT");
+//            final String json = objectMapper.writeValueAsString(m);
+//            session.sendMessage(new TextMessage(json));
+//        } catch (Exception e) {
+//            LOGGER.error("Failed to send ID to user");
+//        }
 
         LOGGER.info("User " + userId);
         if (userId == null || accountService.getUser(userId) == null) {
