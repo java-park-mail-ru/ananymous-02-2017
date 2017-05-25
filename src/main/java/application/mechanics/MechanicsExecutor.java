@@ -25,23 +25,30 @@ public class MechanicsExecutor {
     @NotNull
     private static final Logger LOGGER = LoggerFactory.getLogger(RemotePointService.class.getSimpleName());
 
-    // TODO fix autowired
-    @Autowired
+    public MechanicsExecutor(@NotNull AccountService accountService,
+                             @NotNull ClientSnapService clientSnapshotsService,
+                             @NotNull ServerSnapService serverSnapshotService,
+                             @NotNull RemotePointService remotePointService,
+                             @NotNull ObjectMapper objectMapper) {
+        this.accountService = accountService;
+        this.clientSnapshotsService = clientSnapshotsService;
+        this.serverSnapshotService = serverSnapshotService;
+        this.remotePointService = remotePointService;
+        this.objectMapper = objectMapper;
+    }
+
     @NotNull
     private AccountService accountService;
-    @Autowired
     @NotNull
     private ClientSnapService clientSnapshotsService;
-    @Autowired
     @NotNull
     private ServerSnapService serverSnapshotService;
-    @Autowired
     @NotNull
     private RemotePointService remotePointService;
-    @Autowired
     @NotNull
     private ObjectMapper objectMapper;
 
+    // TODO rewrite this factory
     private final ThreadFactory threadFactory = new ThreadFactory(){
         @Override
         public Thread newThread(Runnable r) {
@@ -51,8 +58,10 @@ public class MechanicsExecutor {
         };
     };
 
+    @NotNull
     private final ExecutorService tickExecutors = Executors.newFixedThreadPool(Config.THREADS_NUM, threadFactory);
 
+    @NotNull
     private final GameMechanics[] gameMechanics = new GameMechanics[Config.THREADS_NUM];
 
     @PostConstruct
@@ -87,8 +96,6 @@ public class MechanicsExecutor {
 
     public void addClientSnapshot(long forUser, UserSnap message) {
         LOGGER.info("addClientSnapshot");
-        LOGGER.info("CLIENT SNAPSHOT");
-        LOGGER.info("id: " + forUser);
         LOGGER.info("id: {}", forUser);
         LOGGER.info("position: {}", message.getPosition());
         LOGGER.info("camera: {}", message.getCamera());

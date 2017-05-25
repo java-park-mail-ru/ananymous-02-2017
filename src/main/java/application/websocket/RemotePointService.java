@@ -29,9 +29,7 @@ public class RemotePointService {
 
     public void registerUser(@NotNull Long userId,
                              @NotNull WebSocketSession webSocketSession) {
-        LOGGER.info("registerUser, id = " + userId);
         sessions.put(userId, webSocketSession);
-        LOGGER.info("registerUser, sessions size =  " + sessions.size());
     }
 
     public boolean isConnected(@NotNull Long userId) {

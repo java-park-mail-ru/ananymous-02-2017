@@ -1,9 +1,10 @@
 package application.mechanics.base;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class UserSnap {
-    @NotNull
+    @Nullable
     private Long id;
     @NotNull
     private Coordinates position;
@@ -11,7 +12,8 @@ public class UserSnap {
     private Coordinates camera;
     private boolean firing;
 
-    public long getId() {
+    @Nullable
+    public Long getId() {
         return id;
     }
 
