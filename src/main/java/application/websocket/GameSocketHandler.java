@@ -134,9 +134,11 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
     @SuppressWarnings("OverlyBroadCatchBlock")
     private void sendIdToClient(@NotNull WebSocketSession session, Long id) {
+        LOGGER.info("sendIdToClient, id = " + id + ", session: " + session);
         final Message message = new Message(Message.INITIALIZE_USER, String.valueOf(id));
         try {
             final String json = objectMapper.writeValueAsString(message);
+            LOGGER.info("sendIdToClient, json: " + json);
             session.sendMessage(new TextMessage(json));
         }
         catch (Exception e) {
