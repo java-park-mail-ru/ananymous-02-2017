@@ -38,11 +38,5 @@ public class ExceptionsHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new MessageResponse("User was registered, but there was a problem in getting id"));
     }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity notFoundException(@NotNull NotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new MessageResponse(String.format("id: %s, not found", e.getId())));
-    }
 }
 

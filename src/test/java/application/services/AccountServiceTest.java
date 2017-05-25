@@ -2,7 +2,6 @@ package application.services;
 
 import application.models.User;
 import application.utils.exceptions.GeneratedKeyException;
-import application.utils.exceptions.NotFoundException;
 import application.utils.requests.UserRequest;
 import application.utils.responses.FullUserResponse;
 import org.jetbrains.annotations.NotNull;
@@ -175,7 +174,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void testAddScore() throws NotFoundException {
+    public void testAddScore() {
         final Long id = addDefaultUser();
         User user = accountService.getUser(id);
         assertEquals(0, user.getsScore());

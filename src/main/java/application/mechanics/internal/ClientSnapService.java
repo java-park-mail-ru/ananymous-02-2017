@@ -4,7 +4,6 @@ import application.mechanics.GameSession;
 import application.mechanics.avatar.GameUser;
 import application.mechanics.base.*;
 import application.services.AccountService;
-import application.utils.exceptions.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -47,7 +46,7 @@ public class ClientSnapService {
         return userToSnaps.get(user);
     }
 
-    public void processSnapshotsFor(GameSession gameSession) throws NotFoundException {
+    public void processSnapshotsFor(GameSession gameSession) {
         final Collection<GameUser> players = gameSession.getPlayers();
         for (GameUser player : players) {
             final List<UserSnap> playerSnaps = getSnapsForUser(player.getId());

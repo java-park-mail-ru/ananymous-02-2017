@@ -3,7 +3,6 @@ package application.controllers;
 import application.models.User;
 import application.services.AccountService;
 import application.utils.Validator;
-import application.utils.exceptions.NotFoundException;
 import application.utils.requests.PasswordRequest;
 import application.utils.requests.ScoreRequest;
 import application.utils.responses.FullUserResponse;
@@ -82,7 +81,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(path = "/score", consumes = "application/json", produces = "application/json")
-    public ResponseEntity addScore(@RequestBody ScoreRequest body) throws NotFoundException {
+    public ResponseEntity addScore(@RequestBody ScoreRequest body) {
         Long id = body.getId();
         if (id == null) {
             final String username = body.getUsername();
@@ -97,7 +96,11 @@ public class UserController extends BaseController {
                 }
             }
         }
-        accountService.addScore(id, body.getsScore(), body.getmScore());
+        final boolean success = accountService.addScore(id, body.getsScore(), body.getmScore());
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageResponse(String.format("Coundn't add score for id %d", id)));
+        }
         return ResponseEntity.ok(new MessageResponse("Success"));
     }
 }

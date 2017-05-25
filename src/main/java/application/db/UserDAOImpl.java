@@ -2,12 +2,10 @@ package application.db;
 
 import application.models.User;
 import application.utils.exceptions.GeneratedKeyException;
-import application.utils.exceptions.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -80,15 +78,12 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
-    public void addScore(@Nullable Long id, int sScore, int mScore) throws NotFoundException {
+    public boolean addScore(@Nullable Long id, int sScore, int mScore) {
         final String query = "UPDATE users SET " +
                 "sscore = sscore + ?, " +
                 "mscore = mscore + ?" +
                 "WHERE id = ?";
-        final int updated = template.update(query, sScore, mScore, id);
-        if (updated == 0) {
-            throw new NotFoundException(id);
-        }
+        return template.update(query, sScore, mScore, id) != 0;
     }
 
     @Override

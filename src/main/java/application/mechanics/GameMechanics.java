@@ -7,7 +7,6 @@ import application.mechanics.internal.GameSessionService;
 import application.mechanics.internal.ServerSnapService;
 import application.models.User;
 import application.services.AccountService;
-import application.utils.exceptions.NotFoundException;
 import application.websocket.Message;
 import application.websocket.RemotePointService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -97,7 +96,7 @@ public class GameMechanics {
                 accountService.getUser(candidate) != null;
     }
 
-    public void gmStep(long frameTime) throws NotFoundException {
+    public void gmStep(long frameTime) {
         while (!tasks.isEmpty()) {
             final Runnable nextTask = tasks.poll();
             try {
@@ -124,7 +123,6 @@ public class GameMechanics {
             }
             sessionsToTerminate.forEach(gameSessionService::notifyGameIsOver);
         }
-
 
         removeLeftUsers();
 

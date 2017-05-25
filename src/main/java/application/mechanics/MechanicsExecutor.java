@@ -5,7 +5,6 @@ import application.mechanics.internal.ClientSnapService;
 import application.mechanics.internal.ServerSnapService;
 import application.mechanics.utils.TimeHelper;
 import application.services.AccountService;
-import application.utils.exceptions.NotFoundException;
 import application.websocket.RemotePointService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
@@ -123,10 +122,7 @@ public class MechanicsExecutor {
             while (true) {
                 final long before = clock.millis();
 
-                try {
-                    gameMechanics.gmStep(lastFrameMillis);
-                } catch (NotFoundException ignore) {
-                }
+                gameMechanics.gmStep(lastFrameMillis);
 
                 final long after = clock.millis();
                 TimeHelper.sleep(Config.STEP_TIME - (after - before));
