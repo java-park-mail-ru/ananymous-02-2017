@@ -64,6 +64,24 @@ public class GameSocketHandler extends TextWebSocketHandler {
         remotePointService.registerUser(user.getId(), webSocketSession);
         sendIdToClient(webSocketSession, user.getId());
 
+        Message m = new Message(Message.INITIALIZE_USER, String.valueOf(id));
+        try {
+            LOGGER.info("INITIALIZE_USER");
+            final String json = objectMapper.writeValueAsString(m);
+            webSocketSession.sendMessage(new TextMessage(json));
+        } catch (Exception e) {
+            LOGGER.error("Failed to send ID to user");
+        }
+
+        m = new Message(Message.SNAPSHOT, String.valueOf(id));
+        try {
+            LOGGER.info("SNAPSHOT");
+            final String json = objectMapper.writeValueAsString(m);
+            webSocketSession.sendMessage(new TextMessage(json));
+        } catch (Exception e) {
+            LOGGER.error("Failed to send ID to user");
+        }
+
         LOGGER.info("Send JoinGame.Request");
 
         final Message message = new Message(JoinGame.Request.class, "{}");
@@ -111,26 +129,6 @@ public class GameSocketHandler extends TextWebSocketHandler {
         } catch (HandleException e) {
             LOGGER.error("Can't handle message of type " + message.getType() + " with content: " + message.getData(), e);
         }
-
-
-        Message m = new Message(Message.INITIALIZE_USER, String.valueOf(userId));
-        try {
-            LOGGER.info("INITIALIZE_USER");
-            final String json = objectMapper.writeValueAsString(m);
-            session.sendMessage(new TextMessage(json));
-        } catch (Exception e) {
-            LOGGER.error("Failed to send ID to user");
-        }
-
-        m = new Message(Message.SNAPSHOT, String.valueOf(userId));
-        try {
-            LOGGER.info("SNAPSHOT");
-            final String json = objectMapper.writeValueAsString(m);
-            session.sendMessage(new TextMessage(json));
-        } catch (Exception e) {
-            LOGGER.error("Failed to send ID to user");
-        }
-
     }
 
     @Override
