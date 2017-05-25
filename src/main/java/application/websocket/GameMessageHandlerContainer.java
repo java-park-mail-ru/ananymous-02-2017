@@ -17,16 +17,21 @@ public class GameMessageHandlerContainer implements MessageHandlerContainer {
 
     @Override
     public void handle(@NotNull Message message, @NotNull Long forUser) throws HandleException {
+        LOGGER.info("handle in container");
         final Class clazz;
         try {
+            LOGGER.info("start getting class for name");
             clazz = Class.forName(message.getType());
+            LOGGER.info("end getting class for name");
         } catch (ClassNotFoundException e) {
             throw new HandleException("Can't handle message of " + message.getType() + " type", e);
         }
+        LOGGER.info("get message handler");
         final MessageHandler<?> messageHandler = handlerMap.get(clazz);
         if (messageHandler == null) {
             throw new HandleException("No handler for message of " + message.getType() + " type");
         }
+        LOGGER.info("handle message by handler");
         messageHandler.handleMessage(message, forUser);
         LOGGER.debug("message handled: type =[" + message.getType() + "], content=[" + message.getData() + ']');
     }

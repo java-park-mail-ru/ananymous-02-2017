@@ -2,10 +2,13 @@ package application.mechanics.handlers;
 
 import application.mechanics.MechanicsExecutor;
 import application.mechanics.base.UserSnap;
+import application.websocket.GameMessageHandlerContainer;
 import application.websocket.HandleException;
 import application.websocket.MessageHandler;
 import application.websocket.MessageHandlerContainer;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +33,9 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class ClientSnapHandler extends MessageHandler<UserSnap> {
+    @NotNull
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientSnapHandler.class);
+
     private final MechanicsExecutor mechanicsExecutor;
     private final MessageHandlerContainer messageHandlerContainer;
 
@@ -46,6 +52,7 @@ public class ClientSnapHandler extends MessageHandler<UserSnap> {
 
     @Override
     public void handle(UserSnap message, Long forUser) throws HandleException {
+        LOGGER.info("ClientSnapHandler, handle");
         mechanicsExecutor.addClientSnapshot(forUser, message);
     }
 }
