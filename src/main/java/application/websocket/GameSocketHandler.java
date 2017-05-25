@@ -67,8 +67,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         final Message message = new Message(JoinGame.Request.class, "{}");
         try {
             messageHandlerContainer.handle(message, user.getId());
-        }
-        catch (HandleException e) {
+        } catch (HandleException e) {
             LOGGER.error("Can't handle message while handshaking");
         }
     }
@@ -80,6 +79,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         if (userId == null || accountService.getUser(userId) == null) {
             // TODO
             // throw new AuthenticationException("Only authenticated users allowed to play a game");
+            LOGGER.error("Only authenticated users allowed to play a game!");
             return;
         }
 
@@ -102,6 +102,10 @@ public class GameSocketHandler extends TextWebSocketHandler {
         } catch (HandleException e) {
             LOGGER.error("Can't handle message of type " + message.getType() + " with content: " + message.getData(), e);
         }
+
+        sendIdToClient(session, userId);
+
+
     }
 
     @Override
@@ -140,8 +144,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
             final String json = objectMapper.writeValueAsString(message);
             LOGGER.info("sendIdToClient, json: " + json);
             session.sendMessage(new TextMessage(json));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Failed to send ID to user");
         }
 
