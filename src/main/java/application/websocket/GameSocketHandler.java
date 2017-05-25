@@ -83,7 +83,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         final Long userId = (Long) session.getAttributes().get(USER_ID);
 
         LOGGER.info("handleTextMessage, session: " + session.toString() + ", id: " + userId);
-        sendIdToClient(session, userId);
+        sendIdToClient(session, 42L);
 
         LOGGER.info("User with id " + userId);
         if (userId == null || accountService.getUser(userId) == null) {
