@@ -53,7 +53,9 @@ public class ClientSnapHandler extends MessageHandler<UserSnap> {
     @Override
     public void handle(UserSnap message, Long forUser) throws HandleException {
         LOGGER.info("ClientSnapHandler, handle");
+        LOGGER.info("mechanicsExecutor != null : " + (mechanicsExecutor != null));
         mechanicsExecutor.addClientSnapshot(forUser, message);
+        LOGGER.info("ClientSnapHandler, end handling");
     }
 }
 
