@@ -64,6 +64,8 @@ public class GameSocketHandler extends TextWebSocketHandler {
         remotePointService.registerUser(user.getId(), webSocketSession);
         sendIdToClient(webSocketSession, user.getId());
 
+        LOGGER.info("Send JoinGame.Request");
+
         final Message message = new Message(JoinGame.Request.class, "{}");
         try {
             messageHandlerContainer.handle(message, user.getId());
@@ -75,6 +77,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session,
                                      @NotNull TextMessage textMessage) throws AuthenticationException {
+        LOGGER.info("handleTextMessage");
         final Long userId = (Long) session.getAttributes().get(USER_ID);
         if (userId == null || accountService.getUser(userId) == null) {
             // TODO
@@ -112,7 +115,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         } catch (Exception e) {
             LOGGER.error("Failed to send ID to user");
         }
-        
+
         m = new Message(Message.SNAPSHOT, String.valueOf(userId));
         try {
             LOGGER.info("SNAPSHOT");
