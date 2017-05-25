@@ -17,7 +17,7 @@ public class GameMessageHandlerContainer implements MessageHandlerContainer {
 
     @Override
     public void handle(@NotNull Message message, @NotNull Long forUser) throws HandleException {
-        LOGGER.info("handle in container");
+        LOGGER.info("handle in container for user " + forUser);
         final Class clazz;
         try {
             LOGGER.info("start getting class for name");
@@ -31,7 +31,7 @@ public class GameMessageHandlerContainer implements MessageHandlerContainer {
         if (messageHandler == null) {
             throw new HandleException("No handler for message of " + message.getType() + " type");
         }
-        LOGGER.info("handle message by handler");
+        LOGGER.info("handle message by handler for user " + forUser);
         messageHandler.handleMessage(message, forUser);
         LOGGER.debug("message handled: type =[" + message.getType() + "], content=[" + message.getData() + ']');
     }
