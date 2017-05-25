@@ -62,8 +62,6 @@ public class GameSocketHandler extends TextWebSocketHandler {
         LOGGER.info("New user {} #{}", user.getLogin(), user.getId());
         remotePointService.registerUser(user.getId(), webSocketSession);
 
-
-        LOGGER.info("afterConnectionEstablished, session: " + webSocketSession.toString() + ", id: " + user.getId());
         sendIdToClient(webSocketSession, user.getId());
 
         LOGGER.info("Send JoinGame.Request");
@@ -81,10 +79,6 @@ public class GameSocketHandler extends TextWebSocketHandler {
                                      @NotNull TextMessage textMessage) throws AuthenticationException {
         LOGGER.info("handleTextMessage");
         final Long userId = (Long) session.getAttributes().get(USER_ID);
-
-        LOGGER.info("handleTextMessage, session: " + session.toString() + ", id: " + userId);
-        sendIdToClient(session, userId);
-
         LOGGER.info("User " + userId);
         if (userId == null || accountService.getUser(userId) == null) {
             // TODO
