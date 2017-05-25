@@ -17,7 +17,7 @@ public class UserSnap {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(@NotNull Long id) {
         this.id = id;
     }
 
