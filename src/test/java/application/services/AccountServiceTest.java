@@ -1,6 +1,7 @@
 package application.services;
 
 import application.models.User;
+import application.utils.exceptions.GeneratedKeyException;
 import application.utils.requests.UserRequest;
 import application.utils.responses.FullUserResponse;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +36,21 @@ public class AccountServiceTest {
     }
 
     private @Nullable Long addUser(@NotNull String login, @NotNull String email, @NotNull String password) {
-        return accountService.addUser(new UserRequest(login, email, password));
+        try {
+            return accountService.addUser(new UserRequest(login, email, password));
+        } catch (GeneratedKeyException e) {
+            fail();
+            return null;
+        }
     }
 
     private @Nullable Long addDefaultUser() {
-        return accountService.addUser(getDefaultUserRequest());
+        try {
+            return accountService.addUser(getDefaultUserRequest());
+        } catch (GeneratedKeyException e) {
+            fail();
+            return null;
+        }
     }
 
     @Test
@@ -55,7 +67,11 @@ public class AccountServiceTest {
     @Test
     public void testConflict() {
         addDefaultUser();
-        assertNull(addDefaultUser());
+        try {
+            addDefaultUser();
+            fail();
+        } catch (DuplicateKeyException ignore) {
+        }
     }
 
     @Test

@@ -1,11 +1,12 @@
 package application.db;
 
 import application.models.User;
+import application.utils.exceptions.GeneratedKeyException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -27,20 +28,21 @@ public class UserDAOImpl implements UserDAO{
     private JdbcTemplate template;
 
     @Override
-    public @Nullable Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore) {
+    public @NotNull Long add(@NotNull String login, @NotNull String email, @NotNull String password, int sScore, int mScore)
+            throws GeneratedKeyException {
+        final KeyHolder idHolder = new GeneratedKeyHolder();
+        template.update(con -> {
+            final String query = "INSERT INTO users (login, email, password, sscore, mscore) VALUES (?, ?, ?, ?, ?)";
+            final PreparedStatement pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            pst.setString(1, login);
+            pst.setString(2, email);
+            pst.setString(3, password);
+            pst.setInt(4, sScore);
+            pst.setInt(5, mScore);
+            return pst;
+        }, idHolder);
+        final Map<String, Object> keys = idHolder.getKeys();
         try {
-            final KeyHolder idHolder = new GeneratedKeyHolder();
-            template.update(con -> {
-                final String query = "INSERT INTO users (login, email, password, sscore, mscore) VALUES (?, ?, ?, ?, ?)";
-                final PreparedStatement pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                pst.setString(1, login);
-                pst.setString(2, email);
-                pst.setString(3, password);
-                pst.setInt(4, sScore);
-                pst.setInt(5, mScore);
-                return pst;
-            }, idHolder);
-            final Map<String, Object> keys = idHolder.getKeys();
             if (keys.size() > 1) {
                 // postgres
                 return ((Integer) keys.get("id")).longValue();
@@ -48,8 +50,8 @@ public class UserDAOImpl implements UserDAO{
                 // h2
                 return idHolder.getKey().longValue();
             }
-        } catch (DuplicateKeyException e) {
-            return null;
+        } catch (NullPointerException e) {
+            throw new GeneratedKeyException("Can't get id from insert request", e);
         }
     }
 
