@@ -79,6 +79,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
                                      @NotNull TextMessage textMessage) throws AuthenticationException {
         LOGGER.info("handleTextMessage");
         final Long userId = (Long) session.getAttributes().get(USER_ID);
+        LOGGER.info("User " + userId);
         if (userId == null || accountService.getUser(userId) == null) {
             // TODO
             // throw new AuthenticationException("Only authenticated users allowed to play a game");
@@ -86,10 +87,13 @@ public class GameSocketHandler extends TextWebSocketHandler {
             return;
         }
 
+        LOGGER.info("Start handling message");
+
         final Message message;
         try {
             final ObjectNode node = objectMapper.readValue(textMessage.getPayload(), ObjectNode.class);
             message = new Message(node.get("type").asText(), node.get("data").toString());
+            LOGGER.info("message parsed: type: " + message.getType() + ", data: " + message.getData());
             // TODO why doesn't working
 //            message = objectMapper.readValue(textMessage.getPayload(), Message.class);
         } catch (JsonParseException | JsonMappingException e) {
@@ -101,7 +105,9 @@ public class GameSocketHandler extends TextWebSocketHandler {
         }
 
         try {
+            LOGGER.info("start handling message");
             messageHandlerContainer.handle(message, userId);
+            LOGGER.info("end handling message");
         } catch (HandleException e) {
             LOGGER.error("Can't handle message of type " + message.getType() + " with content: " + message.getData(), e);
         }
