@@ -3,8 +3,7 @@ package application.mechanics.base;
 import org.jetbrains.annotations.NotNull;
 
 public class VictimModel {
-    @NotNull
-    private Long id;
+    private long id;
     @NotNull
     private String login;
 
@@ -13,17 +12,16 @@ public class VictimModel {
 
     }
 
-    public VictimModel(@NotNull Long id, @NotNull String login) {
+    public VictimModel(long id, @NotNull String login) {
         this.id = id;
         this.login = login;
     }
 
-    @NotNull
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(@NotNull Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

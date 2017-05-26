@@ -13,8 +13,7 @@ public class ServerPlayerSnap {
     private final Set<VictimModel> victims = new HashSet<>();
 
     @JsonProperty("id")
-    @NotNull
-    private Long userId;
+    private long userId;
     @NotNull
     private String login;
     @Nullable
@@ -23,7 +22,7 @@ public class ServerPlayerSnap {
     private int kills;
     private int deaths;
 
-    public ServerPlayerSnap(@NotNull Long id,
+    public ServerPlayerSnap(long id,
                             @Nullable Coordinates position,
                             @NotNull Collection<VictimModel> victims,
                             int hp,
@@ -52,7 +51,7 @@ public class ServerPlayerSnap {
         return userId;
     }
 
-    public void setUserId(@NotNull Long userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
