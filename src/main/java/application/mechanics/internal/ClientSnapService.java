@@ -76,7 +76,7 @@ public class ClientSnapService {
     @Nullable
     private GameUser processFiring(UserSnap snap, Iterable<GameUser> players) {
         final Coordinates myPosition = snap.getPosition();
-        LOGGER.info("FIRING:myPosition. {}", myPosition.toString());
+        LOGGER.info("FIRING:my id {}, myPosition. {}", snap.getId(), myPosition.toString());
 
         final Coordinates cameraDirection  = snap.getCamera();
 //        cameraDirection.y *= -1;
