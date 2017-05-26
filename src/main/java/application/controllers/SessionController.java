@@ -34,7 +34,6 @@ public class SessionController extends BaseController {
     @PostMapping(path = "/signup", consumes = "application/json", produces = "application/json")
     public ResponseEntity signup(@RequestBody UserRequest body, HttpSession httpSession) throws GeneratedKeyException {
         final String error = Validator.getUserError(body);
-        LOGGER.info("signup, session: " + httpSession.getId());
 
         if (error != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -54,7 +53,6 @@ public class SessionController extends BaseController {
     public ResponseEntity signin(@RequestBody UsernameRequest body, HttpSession httpSession)
     {
         final String error = Validator.getUserRequestError(body);
-        LOGGER.info("signin, session: " + httpSession.getId());
 
         if (error != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -82,7 +80,6 @@ public class SessionController extends BaseController {
     @PostMapping(path = "/logout", produces = "application/json")
     public ResponseEntity logout(HttpSession httpSession)
     {
-        LOGGER.info("logout, session: " + httpSession.getId());
         if (httpSession.getAttribute(USER_ID) == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("User not logged in"));
@@ -93,7 +90,6 @@ public class SessionController extends BaseController {
 
     @GetMapping(path = "/cur-user", produces = "application/json")
     public ResponseEntity getCurrentUser(HttpSession httpSession) {
-        LOGGER.info("getCurrentUser, session: " + httpSession.getId());
         final Long id = (Long) httpSession.getAttribute(USER_ID);
         if (id == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
