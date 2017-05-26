@@ -1,5 +1,6 @@
 package application.mechanics.internal;
 
+import application.mechanics.Config;
 import application.mechanics.GameSession;
 import application.mechanics.avatar.GameUser;
 import application.mechanics.base.*;
@@ -33,11 +34,6 @@ public class ClientSnapService {
         this.blockService = blockService;
     }
 
-    private static final int RADIUS = 3;
-    public static final int SCORES_FOR_SHOT = 2;
-    public static final int SCORES_FOR_KILL = 10;
-    public static final double DAMAGE_COEFF_MIN = 0.5;
-
     public synchronized void pushClientSnap(long user, @NotNull UserSnap snap) {
         final List<UserSnap> userSnaps = userToSnaps.computeIfAbsent(user, u -> new ArrayList<>());
         userSnaps.add(snap);
@@ -64,13 +60,13 @@ public class ClientSnapService {
                 }
                 final GameUser victim = processFiring(snap, players);
                 if (victim != null) {
-                    accountService.addScore(player.getId(), 0, SCORES_FOR_SHOT);
+                    accountService.addScore(player.getId(), 0, Config.SCORES_FOR_SHOT);
                     victim.markShot(damageCoeff);
                     if (!victim.isAlive()) {
                         final VictimModel model =
                                 new VictimModel(victim.getId(), victim.getUser().getLogin());
                         player.addVictim(model);
-                        accountService.addScore(player.getId(), 0, SCORES_FOR_KILL);
+                        accountService.addScore(player.getId(), 0, Config.SCORES_FOR_KILL);
                     }
                 }
             }
@@ -80,10 +76,9 @@ public class ClientSnapService {
     @Nullable
     private GameUser processFiring(UserSnap snap, Iterable<GameUser> players) {
         final Coordinates myPosition = snap.getPosition();
-        LOGGER.info("FIRING:myPosition. " + myPosition.toString());
+        LOGGER.info("FIRING:myPosition. {}", myPosition.toString());
 
         final Coordinates cameraDirection  = snap.getCamera();
-        LOGGER.info("FIRING:cameraDirection. " + cameraDirection.toString());
         cameraDirection.y *= -1;
         
         final MyVector currentShot = new MyVector(cameraDirection);
@@ -96,15 +91,20 @@ public class ClientSnapService {
             if (enemyPosition == null) {
                 continue;
             }
+            LOGGER.info("FIRING:enemyPosition. {}", enemyPosition.toString());
 
             final MyVector idealShot = new MyVector(enemyPosition.subtract(myPosition));
+            LOGGER.info("FIRING:Ideal shot: ({}, {}, {})", idealShot.getX(), idealShot.getY(), idealShot.getZ());
+            LOGGER.info("FIRING:My shot: ({}, {}, {})", currentShot.getX(), currentShot.getY(), currentShot.getZ());
 
             final double distance = enemyPosition.getDistanceBetween(myPosition);
-            final double hypotenuse = Math.hypot(distance, RADIUS);
+            final double hypotenuse = Math.hypot(distance, Config.RADIUS);
 
             final double maxCos = distance / hypotenuse;
+            LOGGER.info("FIRING:maxCos. {}", maxCos);
 
             final double cos = currentShot.getCos(idealShot);
+            LOGGER.info("FIRING:cos. {}", cos);
             if (cos >= maxCos) {
                 if (!noWallsBetween(myPosition, enemyPosition, currentShot)) {
                     continue;
@@ -114,9 +114,9 @@ public class ClientSnapService {
                 final double distanceFromEnemyCenter =
                         Math.sqrt(shotLenght * shotLenght - distance * distance);
                 
-                damageCoeff = (RADIUS - distanceFromEnemyCenter) / RADIUS;
-                if (damageCoeff < DAMAGE_COEFF_MIN) {
-                    damageCoeff = DAMAGE_COEFF_MIN;
+                damageCoeff = (Config.RADIUS - distanceFromEnemyCenter) / Config.RADIUS;
+                if (damageCoeff < Config.DAMAGE_COEFF_MIN) {
+                    damageCoeff = Config.DAMAGE_COEFF_MIN;
                 }
                 return player;
             }
@@ -127,6 +127,7 @@ public class ClientSnapService {
     private boolean noWallsBetween(@NotNull Coordinates killer, @NotNull Coordinates enemy, @NotNull MyVector camera) {
         final Set<Block> blocks = blockService.getBlocks();
         for (Block block: blocks) {
+            // TODO out of cycle
             final Ray shotRay = new Ray(camera, killer);
             final Double distanceToBlock = block.isOnTheWay(shotRay);
             if (distanceToBlock != null) {
