@@ -53,8 +53,8 @@ public class ServerSnapService {
                 // TODO normal setter
                 snap.setShot(player.getShot());
                 snap.setHp(player.getHp());
-                snap.setKills(player.getHp());
-                snap.setDeaths(player.getHp());
+                snap.setKills(player.getKills());
+                snap.setDeaths(player.getDeaths());
 
                 message.setData(objectMapper.writeValueAsString(snap));
                 remotePointService.sendMessageToUser(player.getId(), message);
