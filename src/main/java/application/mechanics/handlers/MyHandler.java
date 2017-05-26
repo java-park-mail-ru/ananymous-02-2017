@@ -14,7 +14,7 @@ public class MyHandler extends MessageHandler<String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MyHandler.class.getSimpleName());
 
     @Override
-    public void handle(@NotNull String message, @NotNull Long forUser) throws HandleException {
+    public void handle(@NotNull String message, long forUser) throws HandleException {
         LOGGER.info("MyHandler. " + message);
     }
 
