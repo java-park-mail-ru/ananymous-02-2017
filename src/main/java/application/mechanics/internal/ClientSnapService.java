@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -55,10 +54,10 @@ public class ClientSnapService {
             player.setPosition(lastSnap.getPosition());
 
             for (UserSnap snap: playerSnaps) {
-                if (!snap.isFiring()) {
+                if (!snap.isShooting()) {
                     continue;
                 }
-                final GameUser victim = processFiring(snap, players);
+                final GameUser victim = processShooting(snap, players);
                 if (victim != null) {
                     accountService.addScore(player.getId(), 0, Config.SCORES_FOR_SHOT);
                     victim.markShot(damageCoeff);
@@ -74,7 +73,7 @@ public class ClientSnapService {
     }
 
     @Nullable
-    private GameUser processFiring(UserSnap snap, Iterable<GameUser> players) {
+    private GameUser processShooting(UserSnap snap, Iterable<GameUser> players) {
         final Coordinates myPosition = snap.getPosition();
         LOGGER.info("FIRING:my id {}, myPosition. {}", snap.getId(), myPosition.toString());
 
@@ -100,6 +99,7 @@ public class ClientSnapService {
             LOGGER.info("FIRING:My shot: ({}, {}, {})", currentShot.getX(), currentShot.getY(), currentShot.getZ());
 
             final double distance = enemyPosition.getDistanceBetween(myPosition);
+            LOGGER.info("FIRING:distance {}", distance);
             final double hypotenuse = Math.hypot(distance, Config.RADIUS);
 
             final double maxCos = distance / hypotenuse;
