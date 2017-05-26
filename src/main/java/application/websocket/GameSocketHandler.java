@@ -64,8 +64,6 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
         sendIdToClient(webSocketSession, user.getId());
 
-        LOGGER.info("Send JoinGame.Request");
-
         final Message message = new Message(JoinGame.Request.class, "{}");
         try {
             messageHandlerContainer.handle(message, user.getId());
@@ -77,17 +75,13 @@ public class GameSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session,
                                      @NotNull TextMessage textMessage) throws AuthenticationException {
-        LOGGER.info("handleTextMessage");
         final Long userId = (Long) session.getAttributes().get(USER_ID);
-        LOGGER.info("User " + userId);
         if (userId == null || accountService.getUser(userId) == null) {
             // TODO
             // throw new AuthenticationException("Only authenticated users allowed to play a game");
             LOGGER.error("Only authenticated users allowed to play a game!");
             return;
         }
-
-        LOGGER.info("Start handling message");
 
         final Message message;
         try {
@@ -105,9 +99,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         }
 
         try {
-            LOGGER.info("start handling message for user " + userId);
             messageHandlerContainer.handle(message, userId);
-            LOGGER.info("end handling message");
         } catch (HandleException e) {
             LOGGER.error("Can't handle message of type " + message.getType() + " with content: " + message.getData(), e);
         }
