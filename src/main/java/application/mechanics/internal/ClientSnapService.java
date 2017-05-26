@@ -79,16 +79,18 @@ public class ClientSnapService {
         LOGGER.info("FIRING:myPosition. {}", myPosition.toString());
 
         final Coordinates cameraDirection  = snap.getCamera();
-        cameraDirection.y *= -1;
+//        cameraDirection.y *= -1;
         
         final MyVector currentShot = new MyVector(cameraDirection);
 
         for (GameUser player: players) {
+            LOGGER.info("Enemy id {}, snap id {}", player.getId(), snap.getId());
             if (player.getId() == snap.getId()) {
                 continue;
             }
             final Coordinates enemyPosition = player.getPosition();
             if (enemyPosition == null) {
+                LOGGER.info("FIRING:enemyPosition is null");
                 continue;
             }
             LOGGER.info("FIRING:enemyPosition. {}", enemyPosition.toString());
