@@ -43,6 +43,7 @@ public class BlockService {
         }
     }
 
+    @NotNull
     public Set<Block> getBlocks() {
         return blocks;
     }

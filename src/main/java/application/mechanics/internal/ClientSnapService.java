@@ -35,14 +35,13 @@ public class ClientSnapService {
     public static final int SCORES_FOR_KILL = 10;
     public static final double DAMAGE_COEFF_MIN = 0.5;
 
-
-    public synchronized void pushClientSnap(@NotNull Long user, @NotNull UserSnap snap) {
+    public synchronized void pushClientSnap(long user, @NotNull UserSnap snap) {
         final List<UserSnap> userSnaps = userToSnaps.computeIfAbsent(user, u -> new ArrayList<>());
         userSnaps.add(snap);
     }
 
     @Nullable
-    public synchronized List<UserSnap> getSnapsForUser(@NotNull Long user) {
+    public synchronized List<UserSnap> getSnapsForUser(long user) {
         return userToSnaps.get(user);
     }
 

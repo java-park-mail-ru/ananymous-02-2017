@@ -38,13 +38,13 @@ public class RemotePointService {
 
     // TODO check if nullable
     @NotNull
-    public WebSocketSession removeUser(@NotNull Long userId)
+    public WebSocketSession removeUser(long userId)
     {
         return sessions.remove(userId);
     }
 
 
-    public void cutDownConnection(@NotNull Long userId, @NotNull CloseStatus closeStatus) {
+    public void cutDownConnection(long userId, @NotNull CloseStatus closeStatus) {
         final WebSocketSession webSocketSession = sessions.get(userId);
         if (webSocketSession != null && webSocketSession.isOpen()) {
             try {
@@ -55,7 +55,7 @@ public class RemotePointService {
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
-    public void sendMessageToUser(@NotNull Long userId, @NotNull Message message) throws IOException {
+    public void sendMessageToUser(long userId, @NotNull Message message) throws IOException {
         final WebSocketSession webSocketSession = sessions.get(userId);
         if (webSocketSession == null) {
             throw new IOException("No game websocket for user " + userId);
@@ -78,7 +78,7 @@ public class RemotePointService {
     }
 
     @Nullable
-    public WebSocketSession get(@NotNull Long userId) {
+    public WebSocketSession get(long userId) {
         return sessions.get(userId);
     }
 

@@ -16,7 +16,7 @@ public class GameMessageHandlerContainer implements MessageHandlerContainer {
     final Map<Class<?>, MessageHandler<?>> handlerMap = new HashMap<>();
 
     @Override
-    public void handle(@NotNull Message message, @NotNull Long forUser) throws HandleException {
+    public void handle(@NotNull Message message, long forUser) throws HandleException {
         LOGGER.info("handle in container for user " + forUser);
         final Class clazz;
         try {

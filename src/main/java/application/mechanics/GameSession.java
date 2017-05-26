@@ -36,14 +36,13 @@ public class GameSession {
         players.add(new GameUser(player));
     }
 
-    public void removePlayer(@NotNull Long userId) {
+    public void removePlayer(long userId) {
         for (GameUser player: players) {
             if (player.getId() == userId) {
                 players.remove(player);
                 break;
             }
         }
-
     }
 
     @NotNull
@@ -51,8 +50,7 @@ public class GameSession {
         return players;
     }
 
-    @NotNull
-    public Long getId() {
+    public long getId() {
         return sessionId;
     }
 
