@@ -78,9 +78,11 @@ public class ClientSnapService {
         LOGGER.info("FIRING:my id {}, myPosition. {}", snap.getId(), myPosition.toString());
 
         final Coordinates cameraDirection  = snap.getCamera();
+        double alpha = cameraDirection.y;
+        LOGGER.info("alpha = {}, normalized alpha {}", alpha, normalize(alpha));
 //        cameraDirection.y *= -1;
         
-        final MyVector currentShot = new MyVector(cameraDirection);
+//        final MyVector currentShot = new MyVector(cameraDirection);
 
         for (GameUser player: players) {
             LOGGER.info("Enemy id {}, snap id {}", player.getId(), snap.getId());
@@ -94,36 +96,54 @@ public class ClientSnapService {
             }
             LOGGER.info("FIRING:enemyPosition. {}", enemyPosition.toString());
 
-            final MyVector idealShot = new MyVector(enemyPosition.subtract(myPosition));
-            LOGGER.info("FIRING:Ideal shot: ({}, {}, {})", idealShot.getX(), idealShot.getY(), idealShot.getZ());
-            LOGGER.info("FIRING:My shot: ({}, {}, {})", currentShot.getX(), currentShot.getY(), currentShot.getZ());
+//            final MyVector idealShot = new MyVector(enemyPosition.subtract(myPosition));
+//            LOGGER.info("FIRING:Ideal shot: ({}, {}, {})", idealShot.getX(), idealShot.getY(), idealShot.getZ());
+//            LOGGER.info("FIRING:My shot: ({}, {}, {})", currentShot.getX(), currentShot.getY(), currentShot.getZ());
 
             final double distance = enemyPosition.getDistanceBetween(myPosition);
             LOGGER.info("FIRING:distance {}", distance);
-            final double hypotenuse = Math.hypot(distance, Config.RADIUS);
+//            final double hypotenuse = Math.hypot(distance, Config.RADIUS);
 
-            final double maxCos = distance / hypotenuse;
-            LOGGER.info("FIRING:maxCos. {}", maxCos);
+            double beta = Math.atan((enemyPosition.z - myPosition.z) / (enemyPosition.x - myPosition.x));
+            LOGGER.info("beta = {}, normalized beta {}", beta, normalize(beta));
+            final double eps = Math.atan(Config.RADIUS / distance);
+            LOGGER.info("eps = {}", eps);
 
-            final double cos = currentShot.getCos(idealShot);
-            LOGGER.info("FIRING:cos. {}", cos);
-            if (cos >= maxCos) {
-                if (!noWallsBetween(myPosition, enemyPosition, currentShot)) {
-                    continue;
-                }
-                LOGGER.info("Shot in target");
-                final double shotLenght = distance / cos;
-                final double distanceFromEnemyCenter =
-                        Math.sqrt(shotLenght * shotLenght - distance * distance);
-                
-                damageCoeff = (Config.RADIUS - distanceFromEnemyCenter) / Config.RADIUS;
-                if (damageCoeff < Config.DAMAGE_COEFF_MIN) {
-                    damageCoeff = Config.DAMAGE_COEFF_MIN;
-                }
+            alpha = normalize(alpha);
+            beta = normalize(beta);
+
+//            final double maxCos = distance / hypotenuse;
+//            LOGGER.info("FIRING:maxCos. {}", maxCos);
+//
+//            final double cos = currentShot.getCos(idealShot);
+//            LOGGER.info("FIRING:cos. {}", cos);
+            if (alpha >= beta - eps || alpha <= beta + eps) {
+//                if (!noWallsBetween(myPosition, enemyPosition, currentShot)) {
+//                    continue;
+//                }
+//                LOGGER.info("Shot in target");
+//                final double shotLenght = distance / cos;
+//                final double distanceFromEnemyCenter =
+//                        Math.sqrt(shotLenght * shotLenght - distance * distance);
+//
+//                damageCoeff = (Config.RADIUS - distanceFromEnemyCenter) / Config.RADIUS;
+//                if (damageCoeff < Config.DAMAGE_COEFF_MIN) {
+//                    damageCoeff = Config.DAMAGE_COEFF_MIN;
+//                }
                 return player;
             }
         }
         return null;
+    }
+
+    private double normalize(double angle) {
+        final int k = (int) (angle / (2 * Math.PI));
+        if (angle >= 0) {
+            angle -= (2 * Math.PI) * k;
+        } else {
+            angle += (2 * Math.PI) * (k + 1);
+        }
+        return angle;
     }
 
     private boolean noWallsBetween(@NotNull Coordinates killer, @NotNull Coordinates enemy, @NotNull MyVector camera) {
