@@ -78,8 +78,10 @@ public class ClientSnapService {
     @Nullable
     private GameUser processFiring(UserSnap snap, Iterable<GameUser> players) {
         final Coordinates myPosition = snap.getPosition();
+        LOGGER.info("FIRING:myPosition. " + myPosition.toString());
 
         final Coordinates cameraDirection  = snap.getCamera();
+        LOGGER.info("FIRING:cameraDirection. " + cameraDirection.toString());
         cameraDirection.y *= -1;
         
         final MyVector currentShot = new MyVector(cameraDirection);
@@ -94,8 +96,6 @@ public class ClientSnapService {
             }
 
             final MyVector idealShot = new MyVector(enemyPosition.subtract(myPosition));
-            LOGGER.info("Ideal shot: ({}, {}, {})", idealShot.getX(), idealShot.getY(), idealShot.getZ());
-            LOGGER.info("My shot: ({}, {}, {})", currentShot.getX(), currentShot.getY(), currentShot.getZ());
 
             final double distance = enemyPosition.getDistanceBetween(myPosition);
             final double hypotenuse = Math.hypot(distance, RADIUS);

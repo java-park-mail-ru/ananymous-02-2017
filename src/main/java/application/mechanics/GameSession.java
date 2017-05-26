@@ -3,6 +3,7 @@ package application.mechanics;
 import application.mechanics.avatar.GameUser;
 import application.models.User;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +43,7 @@ public class GameSession {
                 break;
             }
         }
+
     }
 
     @NotNull
@@ -55,7 +57,7 @@ public class GameSession {
     }
 
     @Override
-    public boolean equals(@NotNull Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

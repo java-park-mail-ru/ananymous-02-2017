@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api")
 public class SessionController extends BaseController {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(SessionController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionController.class.getSimpleName());
 
     public SessionController(@NotNull AccountService accountService)
     {
@@ -34,6 +34,7 @@ public class SessionController extends BaseController {
     @PostMapping(path = "/signup", consumes = "application/json", produces = "application/json")
     public ResponseEntity signup(@RequestBody UserRequest body, HttpSession httpSession) throws GeneratedKeyException {
         final String error = Validator.getUserError(body);
+        LOGGER.info("signup, session: " + httpSession.toString());
 
         if (error != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -44,11 +45,6 @@ public class SessionController extends BaseController {
         }
 
         final Long id = accountService.addUser(body);
-        if (id == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new MessageResponse(String.format("User %s already exist", body.getLogin())));
-        }
-
 
         httpSession.setAttribute(USER_ID, id);
         return ResponseEntity.ok(new IdResponse(id));
@@ -58,6 +54,7 @@ public class SessionController extends BaseController {
     public ResponseEntity signin(@RequestBody UsernameRequest body, HttpSession httpSession)
     {
         final String error = Validator.getUserRequestError(body);
+        LOGGER.info("signin, session: " + httpSession.toString());
 
         if (error != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -95,6 +92,7 @@ public class SessionController extends BaseController {
 
     @GetMapping(path = "/cur-user", produces = "application/json")
     public ResponseEntity getCurrentUser(HttpSession httpSession) {
+        LOGGER.info("getCurrentUser, session: " + httpSession.toString());
         final Long id = (Long) httpSession.getAttribute(USER_ID);
         if (id == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

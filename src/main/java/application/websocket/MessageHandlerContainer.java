@@ -8,3 +8,5 @@ public interface MessageHandlerContainer {
 
     <T> void registerHandler(@NotNull Class<T> clazz, @NotNull MessageHandler<T> handler);
 }
+
+

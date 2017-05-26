@@ -25,8 +25,7 @@ public abstract class MessageHandler<T> {
                 final Object data = new ObjectMapper().readValue(message.getData(), clazz);
                 handle(clazz.cast(data), forUser);
             } catch (JsonParseException e) {
-                LOGGER.error("Can't parse message with data: " + message.getData() + " to class " + clazz);
-                handle(clazz.cast(message.getData()), forUser);
+                LOGGER.error("Can't parse message with data: " + message.getData() + " to class " + clazz, e);
             }
         } catch (IOException | ClassCastException ex) {
             throw new HandleException("Can't read incoming message of type " + message.getType() + " with content: " +
