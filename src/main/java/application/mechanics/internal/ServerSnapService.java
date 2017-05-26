@@ -8,6 +8,7 @@ import application.websocket.Message;
 import application.websocket.RemotePointService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,15 @@ import java.util.List;
 
 @Service
 public class ServerSnapService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServerSnapService.class);
+    @NotNull
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerSnapService.class.getSimpleName());
+
+    @NotNull
     private final RemotePointService remotePointService;
+    @NotNull
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ServerSnapService(RemotePointService remotePointService) {
+    public ServerSnapService(@NotNull RemotePointService remotePointService) {
         this.remotePointService = remotePointService;
     }
 

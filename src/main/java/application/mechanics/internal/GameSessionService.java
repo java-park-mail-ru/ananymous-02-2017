@@ -4,6 +4,8 @@ import application.mechanics.GameSession;
 import application.mechanics.avatar.GameUser;
 import application.models.User;
 import application.websocket.RemotePointService;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -14,17 +16,22 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameSessionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameSessionService.class);
-    private final Map<Long, GameSession> usersMap = new ConcurrentHashMap<>();
-    private final Set<GameSession> gameSessions = new LinkedHashSet<>();
+    @NotNull
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameSessionService.class.getSimpleName());
 
+    @NotNull
+    private final Map<Long, GameSession> usersMap = new ConcurrentHashMap<>();
+    @NotNull
+    private final Set<GameSession> gameSessions = new LinkedHashSet<>();
+    @NotNull
     private final RemotePointService remotePointService;
 
 
-    public GameSessionService(RemotePointService remotePointService) {
+    public GameSessionService(@NotNull RemotePointService remotePointService) {
         this.remotePointService = remotePointService;
     }
 
+    @NotNull
     public Set<GameSession> getSessions() {
         return gameSessions;
     }
@@ -38,7 +45,7 @@ public class GameSessionService {
         return false;
     }
 
-
+    @Nullable
     public GameSession getSessionForUser(long userId) {
         return usersMap.get(userId);
     }

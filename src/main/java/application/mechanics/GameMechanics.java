@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GameMechanics {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameMechanics.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameMechanics.class.getSimpleName());
 
     @NotNull
     private final AccountService accountService;

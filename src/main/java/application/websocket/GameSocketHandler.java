@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public class GameSocketHandler extends TextWebSocketHandler {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameSocketHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameSocketHandler.class.getSimpleName());
 
     private static final String USER_ID = BaseController.USER_ID;
 

@@ -16,19 +16,22 @@ import java.util.*;
 @Service
 public class ClientSnapService {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientSnapService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientSnapService.class.getSimpleName());
 
     @NotNull
     private final Map<Long, List<UserSnap>> userToSnaps = new HashMap<>();
 
     private double damageCoeff;
-    // TODO fix autowired
-    @Autowired
     @NotNull
     private AccountService accountService;
     @NotNull
-    @Autowired
     private BlockService blockService;
+
+    public ClientSnapService(@NotNull AccountService accountService,
+                             @NotNull BlockService blockService) {
+        this.accountService = accountService;
+        this.blockService = blockService;
+    }
 
     private static final int RADIUS = 3;
     public static final int SCORES_FOR_SHOT = 2;

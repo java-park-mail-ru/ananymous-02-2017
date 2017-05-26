@@ -11,7 +11,7 @@ import java.util.Map;
 @Service
 public class GameMessageHandlerContainer implements MessageHandlerContainer {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameMessageHandlerContainer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameMessageHandlerContainer.class.getSimpleName());
 
     final Map<Class<?>, MessageHandler<?>> handlerMap = new HashMap<>();
 

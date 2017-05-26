@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public abstract class MessageHandler<T> {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class.getSimpleName());
     @NotNull
     protected final Class<T> clazz;
 

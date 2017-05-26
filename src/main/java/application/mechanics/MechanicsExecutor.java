@@ -21,7 +21,6 @@ import java.util.concurrent.ThreadFactory;
 
 @Service
 public class MechanicsExecutor {
-    // TODO make all loggers with simple name
     @NotNull
     private static final Logger LOGGER = LoggerFactory.getLogger(RemotePointService.class.getSimpleName());
 

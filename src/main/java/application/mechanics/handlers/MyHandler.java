@@ -22,23 +22,5 @@ public class MyHandler extends MessageHandler<String> {
         super(String.class);
         messageHandlerContainer.registerHandler(clazz, this);
     }
-
-//    public DisconnectUserHandler(MechanicsExecutor mechanicExecutor, MessageHandlerContainer messageHandlerContainer) {
-//        super(Disconnect.Request.class);
-//        this.mechanicExecutor = mechanicExecutor;
-//        this.messageHandlerContainer = messageHandlerContainer;
-//    }
-
-//    @PostConstruct
-//    private void init() {
-//        messageHandlerContainer.registerHandler(Disconnect.Request.class, this);
-//    }
-
-
-
-//    @Override
-//    public void handle(Disconnect.Request message, long forUser) throws HandleException {
-//        mechanicExecutor.removeUser(forUser);
-//    }
 }
 

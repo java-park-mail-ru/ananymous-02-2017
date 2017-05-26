@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class Block {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(Block.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Block.class.getSimpleName());
 
     @NotNull
     private Coordinates center;
