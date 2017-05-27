@@ -7,7 +7,7 @@ public class UserSnap {
     @NotNull
     private Coordinates position;
     @NotNull
-    private Coordinates camera;
+    private Angles camera;
     private boolean shooting;
 
     public long getId() {
@@ -28,11 +28,11 @@ public class UserSnap {
     }
 
     @NotNull
-    public Coordinates getCamera() {
+    public Angles getCamera() {
         return camera;
     }
 
-    public void setCamera(@NotNull Coordinates camera) {
+    public void setCamera(@NotNull Angles camera) {
         this.camera = camera;
     }
 

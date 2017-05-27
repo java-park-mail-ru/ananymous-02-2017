@@ -74,77 +74,69 @@ public class ClientSnapService {
 
     @Nullable
     private GameUser processShooting(UserSnap snap, Iterable<GameUser> players) {
-        final Coordinates myPosition = snap.getPosition();
-        LOGGER.info("FIRING:my id {}, myPosition. {}", snap.getId(), myPosition.toString());
+        final Coordinates userPosition = snap.getPosition();
+//        LOGGER.info("FIRING:my id {}, userPosition. {}", snap.getId(), userPosition.toString());
 
-        final Coordinates cameraDirection  = snap.getCamera();
-        double alpha = cameraDirection.y;
-        LOGGER.info("alpha = {}, normalized alpha {}", alpha, normalize(alpha));
-//        cameraDirection.y *= -1;
+        final Angles camera = snap.getCamera();
+        final Vec3 normalizedDirection = Vec3.makeNormalized(camera);
         
-//        final MyVector currentShot = new MyVector(cameraDirection);
-
-        for (GameUser player: players) {
-            LOGGER.info("Enemy id {}, snap id {}", player.getId(), snap.getId());
-            if (player.getId() == snap.getId()) {
+        for (GameUser enemy: players) {
+//            LOGGER.info("Enemy id {}, snap id {}", enemy.getId(), snap.getId());
+            if (enemy.getId() == snap.getId()) {
                 continue;
             }
-            final Coordinates enemyPosition = player.getPosition();
+            final Coordinates enemyPosition = enemy.getPosition();
             if (enemyPosition == null) {
                 LOGGER.info("FIRING:enemyPosition is null");
                 continue;
             }
-            LOGGER.info("FIRING:enemyPosition. {}", enemyPosition.toString());
+//            LOGGER.info("FIRING:enemyPosition. {}", enemyPosition.toString());
 
-//            final MyVector idealShot = new MyVector(enemyPosition.subtract(myPosition));
-//            LOGGER.info("FIRING:Ideal shot: ({}, {}, {})", idealShot.getX(), idealShot.getY(), idealShot.getZ());
-//            LOGGER.info("FIRING:My shot: ({}, {}, {})", currentShot.getX(), currentShot.getY(), currentShot.getZ());
+            final Vec3 userToEnemy = new Vec3(userPosition, enemyPosition);
 
-            final double distance = enemyPosition.getDistanceBetween(myPosition);
-            LOGGER.info("FIRING:distance {}", distance);
-//            final double hypotenuse = Math.hypot(distance, Config.RADIUS);
+            final double distance = userToEnemy.lenght();
+//            LOGGER.info("FIRING:distance {}", distance);
 
-            double beta = Math.atan((enemyPosition.z - myPosition.z) / (enemyPosition.x - myPosition.x));
-            LOGGER.info("beta = {}, normalized beta {}", beta, normalize(beta));
-            final double eps = Math.atan(Config.RADIUS / distance);
-            LOGGER.info("eps = {}", eps);
+            final double cosThreshold = distance / Math.hypot(distance, Config.RADIUS);
+//            LOGGER.info("FIRING:cosThreshold. {}", cosThreshold);
 
-            alpha = normalize(alpha);
-            beta = normalize(beta);
+            final double horizontalCos = normalizedDirection.horizontalCosBetween(userToEnemy);
+            final double verticalCos = normalizedDirection.verticalCosBetween(userToEnemy);
+            final double cos = normalizedDirection.cosBetween(userToEnemy);
 
-//            final double maxCos = distance / hypotenuse;
-//            LOGGER.info("FIRING:maxCos. {}", maxCos);
-//
-//            final double cos = currentShot.getCos(idealShot);
+            LOGGER.info("FIRING\nMy id {}, userPosition {}\nEnemy id {}\nEnemyPosition {}\ndistance {}\ncosThreshold {}\nhorizontalCos {}\nverticalCos {}",
+                    snap.getId(), userPosition.toString(), enemy.getId(), enemyPosition.toString(), distance, cosThreshold, horizontalCos, verticalCos);
+
+//            final double cos = normalizedDirection.cosBetween(userToEnemy);
 //            LOGGER.info("FIRING:cos. {}", cos);
-            if (alpha >= beta - eps || alpha <= beta + eps) {
-//                if (!noWallsBetween(myPosition, enemyPosition, currentShot)) {
+            if (horizontalCos >= cosThreshold && verticalCos >= cosThreshold) {
+//                if (!noWallsBetween(userPosition, enemyPosition, currentShot)) {
 //                    continue;
 //                }
-//                LOGGER.info("Shot in target");
-//                final double shotLenght = distance / cos;
-//                final double distanceFromEnemyCenter =
-//                        Math.sqrt(shotLenght * shotLenght - distance * distance);
-//
-//                damageCoeff = (Config.RADIUS - distanceFromEnemyCenter) / Config.RADIUS;
-//                if (damageCoeff < Config.DAMAGE_COEFF_MIN) {
-//                    damageCoeff = Config.DAMAGE_COEFF_MIN;
-//                }
-                return player;
+                LOGGER.info("Shot in target");
+                final double hypotenuse = distance / cos;
+                final double distanceFromEnemyCenter =
+                        Math.sqrt(hypotenuse * hypotenuse - distance * distance);
+
+                damageCoeff = (Config.RADIUS - distanceFromEnemyCenter) / Config.RADIUS;
+                if (damageCoeff < Config.DAMAGE_COEFF_MIN) {
+                    damageCoeff = Config.DAMAGE_COEFF_MIN;
+                }
+                return enemy;
             }
         }
         return null;
     }
 
-    private double normalize(double angle) {
-        final int k = (int) (angle / (2 * Math.PI));
-        if (angle >= 0) {
-            angle -= (2 * Math.PI) * k;
-        } else {
-            angle += (2 * Math.PI) * (k + 1);
-        }
-        return angle;
-    }
+//    private double normalize(double angle) {
+//        final int k = (int) (angle / (2 * Math.PI));
+//        if (angle >= 0) {
+//            angle -= (2 * Math.PI) * k;
+//        } else {
+//            angle += (2 * Math.PI) * (k + 1);
+//        }
+//        return angle;
+//    }
 
     private boolean noWallsBetween(@NotNull Coordinates killer, @NotNull Coordinates enemy, @NotNull MyVector camera) {
         final Set<Block> blocks = blockService.getBlocks();
