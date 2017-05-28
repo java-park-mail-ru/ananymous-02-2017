@@ -17,8 +17,8 @@ public class Vec3 {
     @NotNull
     public static Vec3 makeNormalized(@NotNull Angles angles) {
         final double cosTheta = Math.cos(angles.theta);
-        final double x = cosTheta * Math.cos(angles.phi);
-        final double z = cosTheta * Math.sin(angles.phi);
+        final double x = cosTheta * Math.sin(angles.phi);
+        final double z = cosTheta * Math.cos(angles.phi);
         final double y = Math.sin(angles.theta);
         return new Vec3(x, y, z);
     }

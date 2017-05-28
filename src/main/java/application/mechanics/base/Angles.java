@@ -2,7 +2,9 @@ package application.mechanics.base;
 
 @SuppressWarnings("PublicField")
 public class Angles {
+    // angle from oZ axes in XZ plane
     public double phi;
+    // angle from oY axes in YZ (YX?) plane
     public double theta;
 
     // TODO check for needed
@@ -10,7 +12,7 @@ public class Angles {
     }
 
     public Angles(double phi, double theta) {
-        this.phi = phi + Math.PI / 2;
+        this.phi = phi;
         this.theta = theta;
     }
 
