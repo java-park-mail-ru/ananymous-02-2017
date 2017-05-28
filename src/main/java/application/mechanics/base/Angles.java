@@ -10,7 +10,12 @@ public class Angles {
     }
 
     public Angles(double phi, double theta) {
-        this.phi = phi;
+        this.phi = phi + Math.PI / 2;
         this.theta = theta;
+    }
+
+    @Override
+    public String toString() {
+        return "{phi:" + phi + ",theta:" + theta + '}';
     }
 }
