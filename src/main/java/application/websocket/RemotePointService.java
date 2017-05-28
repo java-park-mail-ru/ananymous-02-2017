@@ -43,7 +43,6 @@ public class RemotePointService {
         return sessions.remove(userId);
     }
 
-
     public void cutDownConnection(long userId, @NotNull CloseStatus closeStatus) {
         final WebSocketSession webSocketSession = sessions.get(userId);
         if (webSocketSession != null && webSocketSession.isOpen()) {

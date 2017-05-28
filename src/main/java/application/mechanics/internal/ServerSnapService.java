@@ -57,6 +57,7 @@ public class ServerSnapService {
                 snap.setDeaths(player.getDeaths());
 
                 message.setData(objectMapper.writeValueAsString(snap));
+                LOGGER.info("send message to user: {}", message.getData());
                 remotePointService.sendMessageToUser(player.getId(), message);
                 player.resetForNextSnap();
             }
