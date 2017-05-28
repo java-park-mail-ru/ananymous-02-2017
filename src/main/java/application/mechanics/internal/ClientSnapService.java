@@ -104,7 +104,7 @@ public class ClientSnapService {
             final double verticalCos = normalizedDirection.verticalCosBetween(userToEnemy);
             final double cos = normalizedDirection.cosBetween(userToEnemy);
 
-            LOGGER.info("FIRING\nMy id {}, userPosition {}\nEnemy id {}\nEnemyPosition {}\ndistance {}\ncosThreshold {}\nhorizontalCos {}\nverticalCos {}",
+            LOGGER.info("FIRING. My id {}, userPosition {}. Enemy id {}. EnemyPosition {}. distance {}. cosThreshold {}. horizontalCos {}. verticalCos {}",
                     snap.getId(), userPosition.toString(), enemy.getId(), enemyPosition.toString(), distance, cosThreshold, horizontalCos, verticalCos);
 
 //            final double cos = normalizedDirection.cosBetween(userToEnemy);
