@@ -109,7 +109,8 @@ public class ClientSnapService {
 
 //            final double cos = normalizedDirection.cosBetween(userToEnemy);
 //            LOGGER.info("FIRING:cos. {}", cos);
-            if (horizontalCos >= cosThreshold && verticalCos >= cosThreshold) {
+//            if (horizontalCos >= cosThreshold && verticalCos >= cosThreshold) {
+            if (cos >= cosThreshold) {
 //                if (!noWallsBetween(userPosition, enemyPosition, currentShot)) {
 //                    continue;
 //                }
