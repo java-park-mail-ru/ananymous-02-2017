@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServerSnapService {
@@ -34,30 +34,22 @@ public class ServerSnapService {
 
     public void sendSnapshotsFor(GameSession gameSession) {
         final Collection<GameUser> players = gameSession.getPlayers();
-        final List<ServerPlayerSnap> playersSnaps = new ArrayList<>();
-        for (GameUser player : players) {
-            final ServerPlayerSnap serverPlayerSnap = player.generateSnap();
-            playersSnaps.add(serverPlayerSnap);
-        }
+        final List<ServerPlayerSnap> playersSnaps = players.stream()
+                .map(GameUser::generateSnap).collect(Collectors.toList());
 
         if (playersSnaps.isEmpty()) {
             throw new RuntimeException("No players snaps");
         }
 
-        final ServerSnap snap = new ServerSnap();
-        snap.setPlayers(playersSnaps);
+        final ServerSnap snap = new ServerSnap(playersSnaps);
         try {
             final Message message = new Message();
             message.setType(Message.SNAPSHOT);
             for (GameUser player : players) {
-                // TODO normal setter
-                snap.setShot(player.getShot());
-                snap.setHp(player.getHp());
-                snap.setKills(player.getKills());
-                snap.setDeaths(player.getDeaths());
+                snap.setPlayer(player);
 
                 message.setData(objectMapper.writeValueAsString(snap));
-                LOGGER.info("send message to user: {}", message.getData());
+                LOGGER.info("send message to user {}: {}", player.getId(), message.getData());
                 remotePointService.sendMessageToUser(player.getId(), message);
                 player.resetForNextSnap();
             }

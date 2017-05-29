@@ -1,4 +1,4 @@
-package application.mechanics.base;
+package application.mechanics.base.geometry;
 
 import org.jetbrains.annotations.NotNull;
 

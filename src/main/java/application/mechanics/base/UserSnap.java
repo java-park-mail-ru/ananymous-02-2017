@@ -1,5 +1,7 @@
 package application.mechanics.base;
 
+import application.mechanics.base.geometry.Angles;
+import application.mechanics.base.geometry.Coordinates;
 import org.jetbrains.annotations.NotNull;
 
 public class UserSnap {

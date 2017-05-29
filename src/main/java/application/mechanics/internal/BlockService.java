@@ -2,7 +2,7 @@ package application.mechanics.internal;
 
 import application.mechanics.Config;
 import application.mechanics.base.Block;
-import application.mechanics.base.Coordinates;
+import application.mechanics.base.geometry.Coordinates;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 

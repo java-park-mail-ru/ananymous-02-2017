@@ -1,14 +1,13 @@
 package application.mechanics.avatar;
 
 import application.mechanics.Config;
-import application.mechanics.base.Coordinates;
+import application.mechanics.base.geometry.Coordinates;
 import application.mechanics.base.ServerPlayerSnap;
 import application.mechanics.base.VictimModel;
 import application.models.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.Null;
 import java.util.HashSet;
 import java.util.Set;
 

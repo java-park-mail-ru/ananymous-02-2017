@@ -1,5 +1,6 @@
 package application.mechanics.base;
 
+import application.mechanics.base.geometry.Coordinates;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

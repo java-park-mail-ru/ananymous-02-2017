@@ -1,4 +1,4 @@
-package application.mechanics.base;
+package application.mechanics.base.geometry;
 
 @SuppressWarnings("PublicField")
 public class Angles {
