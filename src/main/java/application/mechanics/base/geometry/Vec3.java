@@ -51,4 +51,14 @@ public class Vec3 {
     private Vec3 getYZVec() {
         return new Vec3(0, coordinates.y, coordinates.z);
     }
+
+    public double getX() {
+        return coordinates.x;
+    }
+    public double getY() {
+        return coordinates.y;
+    }
+    public double getZ() {
+        return coordinates.z;
+    }
 }

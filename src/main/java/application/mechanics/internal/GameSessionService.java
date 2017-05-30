@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 
 import java.util.LinkedHashSet;
@@ -25,7 +26,6 @@ public class GameSessionService {
     private final Set<GameSession> gameSessions = new LinkedHashSet<>();
     @NotNull
     private final RemotePointService remotePointService;
-
 
     public GameSessionService(@NotNull RemotePointService remotePointService) {
         this.remotePointService = remotePointService;
@@ -72,7 +72,7 @@ public class GameSessionService {
     }
 
 
-    public void removePlayer (GameSession session, long userId) {
+    public void removePlayer(GameSession session, long userId) {
         if (!gameSessions.contains(session)) {
             throw new RuntimeException("Game session not found");
         }

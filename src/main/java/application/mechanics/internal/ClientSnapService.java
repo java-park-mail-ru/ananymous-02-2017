@@ -78,13 +78,10 @@ public class ClientSnapService {
     @Nullable
     private GameUser processShooting(UserSnap snap, Iterable<GameUser> players) {
         final Coordinates userPosition = snap.getPosition();
-//        LOGGER.info("FIRING:my id {}, userPosition. {}", snap.getId(), userPosition.toString());
-
         final Angles camera = snap.getCamera();
         final Vec3 normalizedDirection = Vec3.makeNormalized(camera);
         
         for (GameUser enemy: players) {
-//            LOGGER.info("Enemy id {}, snap id {}", enemy.getId(), snap.getId());
             if (enemy.getId() == snap.getId()) {
                 continue;
             }
@@ -93,15 +90,11 @@ public class ClientSnapService {
                 LOGGER.info("FIRING:enemyPosition is null");
                 continue;
             }
-//            LOGGER.info("FIRING:enemyPosition. {}", enemyPosition.toString());
 
             final Vec3 userToEnemy = new Vec3(userPosition, enemyPosition);
 
             final double distance = userToEnemy.lenght();
-//            LOGGER.info("FIRING:distance {}", distance);
-
             final double cosThreshold = distance / Math.hypot(distance, Config.RADIUS);
-//            LOGGER.info("FIRING:cosThreshold. {}", cosThreshold);
 
             final double horizontalCos = normalizedDirection.horizontalCosBetween(userToEnemy);
             final double verticalCos = normalizedDirection.verticalCosBetween(userToEnemy);
@@ -110,13 +103,12 @@ public class ClientSnapService {
             LOGGER.info("FIRING. My id {}, userPosition {}. angles {}. Enemy id {}. EnemyPosition {}. distance {}. cosThreshold {}. cos {}. horizontalCos {}. verticalCos {}",
                     snap.getId(), userPosition.toString(), camera.toString(), enemy.getId(), enemyPosition.toString(), distance, cosThreshold, cos, horizontalCos, verticalCos);
 
-//            final double cos = normalizedDirection.cosBetween(userToEnemy);
-//            LOGGER.info("FIRING:cos. {}", cos);
 //            if (horizontalCos >= cosThreshold && verticalCos >= cosThreshold) {
             if (cos >= cosThreshold) {
-//                if (!noWallsBetween(userPosition, enemyPosition, currentShot)) {
-//                    continue;
-//                }
+                if (isWallsOnDistance(userPosition, normalizedDirection, distance)) {
+                    LOGGER.info("Shot in wall");
+                    continue;
+                }
                 LOGGER.info("Shot in target");
                 final double hypotenuse = distance / cos;
                 final double distanceFromEnemyCenter =
@@ -132,31 +124,13 @@ public class ClientSnapService {
         return null;
     }
 
-//    private double normalize(double angle) {
-//        final int k = (int) (angle / (2 * Math.PI));
-//        if (angle >= 0) {
-//            angle -= (2 * Math.PI) * k;
-//        } else {
-//            angle += (2 * Math.PI) * (k + 1);
-//        }
-//        return angle;
-//    }
-
-    private boolean noWallsBetween(@NotNull Coordinates killer, @NotNull Coordinates enemy, @NotNull MyVector camera) {
-        final Set<Block> blocks = blockService.getBlocks();
-        for (Block block: blocks) {
-            // TODO out of cycle
-            final Ray shotRay = new Ray(camera, killer);
-            final Double distanceToBlock = block.isOnTheWay(shotRay);
-            if (distanceToBlock != null) {
-                final double distanceToEnemy = killer.getDistanceBetween(enemy);
-                if (distanceToBlock < distanceToEnemy) {
-                    LOGGER.info("Shot in wall");
-                    return false;
-                }
-            }
-        }
-        return true;
+    private boolean isWallsOnDistance(@NotNull Coordinates from, @NotNull Vec3 normalizedDirection, double distance) {
+        final Coordinates to = new Coordinates(
+                from.x + distance * normalizedDirection.getX(),
+                from.y + distance * normalizedDirection.getY(),
+                from.z + distance * normalizedDirection.getZ()
+        );
+        return blockService.isWallsBetween(from, to);
     }
 
     public void clear() {

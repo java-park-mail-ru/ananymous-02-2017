@@ -138,7 +138,6 @@ public class GameMechanics {
         clientSnapshotsService.clear();
     }
 
-
     private void removeLeftUsers() {
         final Map<GameSession, List<Long>> sessionLeftPlayers = new HashMap<>();
         while (!deleted.isEmpty()) {
