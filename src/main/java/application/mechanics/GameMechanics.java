@@ -10,7 +10,9 @@ import application.services.AccountService;
 import application.websocket.Message;
 import application.websocket.RemotePointService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,12 +155,16 @@ public class GameMechanics {
 
         for (GameSession session : sessionLeftPlayers.keySet()) {
             final List<Long> playersLeft = sessionLeftPlayers.get(session);
-            final POJO pojo = new POJO(playersLeft);
+            if (playersLeft.isEmpty()) {
+                continue;
+            }
+
+            final POJO pojo = new POJO(playersLeft.get(0));
             final String jsonArraySnap;
             final String jsonArray;
             try {
                 jsonArraySnap = objectMapper.writeValueAsString(pojo);
-                jsonArray = objectMapper.writeValueAsString(playersLeft);
+                jsonArray = objectMapper.writeValueAsString(pojo);
             }
             catch (JsonProcessingException e) {
                 LOGGER.error("Error serializing!");
@@ -180,10 +186,10 @@ public class GameMechanics {
     }
 
     private static class POJO {
-        final List<Long> delete;
+        final long delete;
 
-        public POJO(List<Long> playersLeft) {
-            this.delete = playersLeft;
+        public POJO(long delete) {
+            this.delete = delete;
         }
     }
 

@@ -47,6 +47,7 @@ public class BlockService {
     public boolean isWallsBetween(@NotNull Coordinates from, @NotNull Coordinates to) {
         final Index fromIndex = getIndexOnMap(from);
         final Index toIndex = getIndexOnMap(to);
+
         for (int i = fromIndex.i; i <= toIndex.i; i++) {
             for (int j = fromIndex.j; j < toIndex.j; j++) {
                 if (blocks[i][j] == null) {
