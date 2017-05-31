@@ -70,8 +70,8 @@ public class BlockService {
     @NotNull
     private Index getIndexOnMap(@NotNull Coordinates point) {
         final Index index = new Index();
-        index.j = (int) (point.x / Config.BLOCK_SIZE);
-        index.i = (int) (point.z / Config.BLOCK_SIZE);
+        index.j = (int) (point.x / Config.BLOCK_SIZE) + n / 2;
+        index.i = (int) (point.z / Config.BLOCK_SIZE) + m / 2;
         return index;
     }
 
