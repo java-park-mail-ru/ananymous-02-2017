@@ -3,6 +3,7 @@ package application.mechanics.internal;
 import application.mechanics.Config;
 import application.mechanics.base.Block;
 import application.mechanics.base.geometry.Coordinates;
+import application.mechanics.base.Map;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,29 +15,17 @@ public class BlockService {
     @NotNull
     private static final Logger LOGGER = LoggerFactory.getLogger(BlockService.class.getSimpleName());
 
-    final int m;
-    final int n;
-    final Block[][] blocks;
+    private final int m;
+    private final int n;
+    private final Block[][] blocks;
 
     public BlockService() {
-        final int[][] map = {
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                {1, 1, 0, 0, 0, 0, 0, 1, 1, 1},
-                {1, 1, 0, 0, 2, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 2, 0, 0, 0, 1},
-                {1, 0, 0, 2, 0, 0, 2, 0, 0, 1},
-                {1, 0, 0, 0, 2, 0, 0, 0, 1, 1},
-                {1, 1, 1, 0, 0, 0, 0, 1, 1, 1},
-                {1, 1, 1, 0, 0, 1, 0, 0, 1, 1},
-                {1, 1, 1, 1, 1, 1, 0, 0, 1, 1},
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-        };
-        m = map.length;
-        n = map[0].length;
+        m = Map.m;
+        n = Map.n;
         blocks = new Block[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (map[i][j] > 0) {
+                if (Map.map[i][j] > 0) {
                     final Coordinates corner = new Coordinates(
                             i * Config.BLOCK_SIZE,
                             Config.BLOCK_HEIGHT,

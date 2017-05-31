@@ -1,9 +1,9 @@
 package application.mechanics.avatar;
 
 import application.mechanics.Config;
-import application.mechanics.base.geometry.Coordinates;
 import application.mechanics.base.ServerPlayerSnap;
 import application.mechanics.base.VictimModel;
+import application.mechanics.base.geometry.Coordinates;
 import application.models.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -1,5 +1,7 @@
 package application.mechanics.base.geometry;
 
+import application.mechanics.Config;
+import application.mechanics.base.Map;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings({"InstanceVariableNamingConvention", "PublicField"})
@@ -13,9 +15,9 @@ public class Coordinates {
     }
 
     public Coordinates(double x, double y, double z) {
-        this.x = x;
+        this.x = x + Map.m * Config.BLOCK_SIZE + Config.BLOCK_SIZE / 2;
+        this.z = z + Map.n * Config.BLOCK_SIZE + Config.BLOCK_SIZE / 2;
         this.y = y;
-        this.z = z;
     }
 
     @NotNull
