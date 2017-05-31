@@ -52,8 +52,8 @@ public class BlockService {
     public boolean isWallsBetween(@NotNull Coordinates from, @NotNull Coordinates to) {
         final Index fromIndex = getIndexOnMap(from);
         final Index toIndex = getIndexOnMap(to);
-        LOGGER.info("from: {}, index: {}. to: {}, index: {}", from.toString(), "i " + fromIndex.i + "j + " + fromIndex.j,
-                to.toString(), "i " + toIndex.i + "j + " + toIndex.j);
+        LOGGER.info("from: {}, index: {}. to: {}, index: {}", from.toString(), "i " + fromIndex.i + ", j " + fromIndex.j,
+                to.toString(), "i " + toIndex.i + ", j " + toIndex.j);
         for (int i = fromIndex.i; i <= toIndex.i; i++) {
             for (int j = fromIndex.j; j < toIndex.j; j++) {
                 if (blocks[i][j] == null) {
@@ -70,8 +70,8 @@ public class BlockService {
     @NotNull
     private Index getIndexOnMap(@NotNull Coordinates point) {
         final Index index = new Index();
-        index.j = (int) (point.x / Config.BLOCK_SIZE) + n / 2;
-        index.i = (int) (point.z / Config.BLOCK_SIZE) + m / 2;
+        index.i = (int) ((point.x + Config.BLOCK_SIZE / 2) / Config.BLOCK_SIZE) + n / 2;
+        index.j = (int) ((point.z + Config.BLOCK_SIZE / 2) / Config.BLOCK_SIZE) + m / 2;
         return index;
     }
 
