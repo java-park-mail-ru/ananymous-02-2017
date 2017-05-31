@@ -12,8 +12,8 @@ public class MapHelper {
     @NotNull
     public static Index getIndex(@NotNull Coordinates point) {
         final Index index = new Index();
-        index.i = (int) (point.x / Config.BLOCK_SIZE + 1. / 2) + Map.M / 2;
-        index.j = (int) (point.z / Config.BLOCK_SIZE + 1. / 2) + Map.N / 2;
+        index.i = (int) ((point.x + Config.BLOCK_SIZE / 2) / Config.BLOCK_SIZE) + Map.M / 2;
+        index.j = (int) ((point.z + Config.BLOCK_SIZE / 2) / Config.BLOCK_SIZE) + Map.N / 2;
         return index;
     }
 }
