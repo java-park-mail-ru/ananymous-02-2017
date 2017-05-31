@@ -1,7 +1,6 @@
 package application.mechanics.internal;
 
 import application.mechanics.Config;
-import application.mechanics.GameMechanics;
 import application.mechanics.base.Block;
 import application.mechanics.base.geometry.Coordinates;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class BlockService {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameMechanics.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlockService.class.getSimpleName());
+
     final int m;
     final int n;
     final Block[][] blocks;
