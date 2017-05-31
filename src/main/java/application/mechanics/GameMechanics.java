@@ -166,7 +166,7 @@ public class GameMechanics {
             final Message message = new Message(Message.REMOVE_USER, jsonArray);
             for (GameUser user : session.getPlayers()) {
                 try {
-                    LOGGER.info("send message to user {}: {}", user.getId(), message.toString());
+                    LOGGER.info("send message to user {}. type: {}, data: {}", user.getId(), message.getType(), message.getData());
                     remotePointService.sendMessageToUser(user.getId(), message);
                 } catch (IOException e) {
                     LOGGER.error("Error sending info about removing user(-s) to user {}", user.getId());
