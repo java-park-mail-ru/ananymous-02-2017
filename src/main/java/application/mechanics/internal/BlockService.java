@@ -1,14 +1,19 @@
 package application.mechanics.internal;
 
 import application.mechanics.Config;
+import application.mechanics.GameMechanics;
 import application.mechanics.base.Block;
 import application.mechanics.base.geometry.Coordinates;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @SuppressWarnings("InstanceVariableNamingConvention")
 @Service
 public class BlockService {
+    @NotNull
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameMechanics.class.getSimpleName());
     final int m;
     final int n;
     final Block[][] blocks;
@@ -47,7 +52,8 @@ public class BlockService {
     public boolean isWallsBetween(@NotNull Coordinates from, @NotNull Coordinates to) {
         final Index fromIndex = getIndexOnMap(from);
         final Index toIndex = getIndexOnMap(to);
-
+        LOGGER.info("from: {}, index: {}. to: {}, index: {}", from.toString(), "i " + fromIndex.i + "j + " + fromIndex.j,
+                to.toString(), "i " + toIndex.i + "j + " + toIndex.j);
         for (int i = fromIndex.i; i <= toIndex.i; i++) {
             for (int j = fromIndex.j; j < toIndex.j; j++) {
                 if (blocks[i][j] == null) {
