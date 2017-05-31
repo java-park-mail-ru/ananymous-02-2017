@@ -12,7 +12,7 @@ public class Message {
     @NotNull
     public static final String SNAPSHOT = "Snapshot";
     @NotNull
-    public static final String REMOVE_PLAYER = "Remove";
+    public static final String REMOVE_PLAYER = "RemovePlayer";
 
     @Nullable
     private String type;
