@@ -61,16 +61,10 @@ public class GameSocketHandler extends TextWebSocketHandler {
         //LOGGER.info("New user {} #{}", user.getLogin(), user.getId());
         remotePointService.registerUser(user.getId(), webSocketSession);
 
-//        sendIdToClient(webSocketSession, user.getId());
         try {
-//            final String idData = objectMapper.writeValueAsString(user.getId());
-//            final Message message = new Message(Message.INITIALIZE_USER, idData);
-            final Message message = new Message(Message.INITIALIZE_USER, "HI, PLEASE NOTICE ME");
-            final Message messageSnap = new Message(Message.SNAPSHOT, "HI, PLEASE NOTICE ME");
-            final Message messageRemove = new Message(Message.REMOVE_PLAYER, "HI, PLEASE NOTICE ME");
+            final String idData = objectMapper.writeValueAsString(user.getId());
+            final Message message = new Message(Message.INITIALIZE_USER, idData);
             remotePointService.sendMessageToUser(user.getId(), message);
-            remotePointService.sendMessageToUser(user.getId(), messageSnap);
-            remotePointService.sendMessageToUser(user.getId(), messageRemove);
         } catch (JsonProcessingException e) {
             LOGGER.error("Failed to send ID to user", e);
             return;
@@ -145,19 +139,6 @@ public class GameSocketHandler extends TextWebSocketHandler {
             } catch (HandleException e) {
                 LOGGER.error("Can't remove user from game");
             }
-        }
-    }
-
-    @SuppressWarnings("OverlyBroadCatchBlock")
-    private void sendIdToClient(@NotNull WebSocketSession session, long id) {
-        //LOGGER.info("sendIdToClient, id = " + id + ", session: " + session);
-        final Message message = new Message(Message.INITIALIZE_USER, String.valueOf(id));
-        try {
-            final String json = objectMapper.writeValueAsString(message);
-            //LOGGER.info("sendIdToClient, json: " + json);
-            session.sendMessage(new TextMessage(json));
-        } catch (Exception e) {
-            LOGGER.error("Failed to send ID to user");
         }
     }
 
