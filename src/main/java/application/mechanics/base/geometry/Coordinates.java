@@ -15,9 +15,11 @@ public class Coordinates {
     }
 
     public Coordinates(double x, double y, double z) {
-        this.x = x + Map.m * Config.BLOCK_SIZE + Config.BLOCK_SIZE / 2;
-        this.z = z + Map.n * Config.BLOCK_SIZE + Config.BLOCK_SIZE / 2;
+//        this.x = x + Map.m * Config.BLOCK_SIZE + Config.BLOCK_SIZE / 2;
+//        this.z = z + Map.n * Config.BLOCK_SIZE + Config.BLOCK_SIZE / 2;
+        this.x = x;
         this.y = y;
+        this.z = z;
     }
 
     @NotNull
