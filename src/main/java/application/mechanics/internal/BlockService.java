@@ -4,6 +4,7 @@ import application.mechanics.Config;
 import application.mechanics.base.Block;
 import application.mechanics.base.geometry.Coordinates;
 import application.mechanics.base.Map;
+import application.mechanics.utils.MapHelper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +21,16 @@ public class BlockService {
     private final Block[][] blocks;
 
     public BlockService() {
-        m = Map.m;
-        n = Map.n;
+        m = Map.M;
+        n = Map.N;
         blocks = new Block[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (Map.map[i][j] > 0) {
+                if (Map.MAP[i][j] > 0) {
                     final Coordinates corner = new Coordinates(
-                            i * Config.BLOCK_SIZE,
+                            i * Config.BLOCK_SIZE - MapHelper.X_OFFSET,
                             Config.BLOCK_HEIGHT,
-                            j * Config.BLOCK_SIZE
+                            j * Config.BLOCK_SIZE - MapHelper.Z_OFFSET
                     );
                     final Block block = new Block(corner, Config.BLOCK_SIZE, Config.BLOCK_HEIGHT, Config.BLOCK_SIZE);
                     blocks[i][j] = block;
@@ -49,6 +50,7 @@ public class BlockService {
         final int toJ = Math.max(fromIndex.j, toIndex.j);
         for (int i = fromI; i <= toI; i++) {
             for (int j = fromJ; j <= toJ; j++) {
+                LOGGER.info("block [{}][{}]", i, j);
                 if (blocks[i][j] == null) {
                     continue;
                 }
