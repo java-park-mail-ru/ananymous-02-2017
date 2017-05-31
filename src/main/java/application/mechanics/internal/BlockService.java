@@ -54,8 +54,12 @@ public class BlockService {
         final Index toIndex = getIndexOnMap(to);
         LOGGER.info("from: {}, index: {}. to: {}, index: {}", from.toString(), "i " + fromIndex.i + ", j " + fromIndex.j,
                 to.toString(), "i " + toIndex.i + ", j " + toIndex.j);
-        for (int i = fromIndex.i; i <= toIndex.i; i++) {
-            for (int j = fromIndex.j; j < toIndex.j; j++) {
+        final int fromI = Math.min(fromIndex.i, toIndex.i);
+        final int toI = Math.max(fromIndex.i, toIndex.i);
+        final int fromJ = Math.min(fromIndex.j, toIndex.j);
+        final int toJ = Math.max(fromIndex.j, toIndex.j);
+        for (int i = fromI; i <= toI; i++) {
+            for (int j = fromJ; j <= toJ; j++) {
                 if (blocks[i][j] == null) {
                     continue;
                 }
