@@ -6,6 +6,7 @@ import application.mechanics.requests.JoinGame;
 import application.models.User;
 import application.services.AccountService;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -60,8 +61,20 @@ public class GameSocketHandler extends TextWebSocketHandler {
         //LOGGER.info("New user {} #{}", user.getLogin(), user.getId());
         remotePointService.registerUser(user.getId(), webSocketSession);
 
-        sendIdToClient(webSocketSession, user.getId());
-
+//        sendIdToClient(webSocketSession, user.getId());
+        try {
+//            final String idData = objectMapper.writeValueAsString(user.getId());
+//            final Message message = new Message(Message.INITIALIZE_USER, idData);
+            final Message message = new Message(Message.INITIALIZE_USER, "HI, PLEASE NOTICE ME");
+            remotePointService.sendMessageToUser(user.getId(), message);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Failed to send ID to user", e);
+            return;
+        } catch (IOException e) {
+            LOGGER.error("Failed to send ID to user", e);
+            e.printStackTrace();
+        }
+        
         final Message message = new Message(JoinGame.Request.class, "{}");
         try {
             messageHandlerContainer.handle(message, user.getId());
