@@ -47,7 +47,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession webSocketSession) throws AuthenticationException {
-        LOGGER.info("ConnectionEstablished");
+        //LOGGER.info("ConnectionEstablished");
         final Long id = (Long) webSocketSession.getAttributes().get(USER_ID);
         final User user;
         if (id == null || (user = accountService.getUser(id)) == null) {
@@ -59,7 +59,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
             LOGGER.error("You are already playing");
             return;
         }
-        LOGGER.info("New user {} #{}", user.getLogin(), user.getId());
+        //LOGGER.info("New user {} #{}", user.getLogin(), user.getId());
         remotePointService.registerUser(user.getId(), webSocketSession);
 
         sendIdToClient(webSocketSession, user.getId());
@@ -87,7 +87,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         try {
             final ObjectNode node = objectMapper.readValue(textMessage.getPayload(), ObjectNode.class);
             message = new Message(node.get("type").asText(), node.get("data").toString());
-            LOGGER.info("message parsed: type: " + message.getType() + ", data: " + message.getData());
+            //LOGGER.info("message parsed: type: " + message.getType() + ", data: " + message.getData());
             // TODO why doesn't working
 //            message = objectMapper.readValue(textMessage.getPayload(), Message.class);
         } catch (JsonParseException | JsonMappingException e) {
@@ -114,7 +114,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(@NotNull WebSocketSession webSocketSession,
                                       @NotNull CloseStatus closeStatus) throws Exception {
-        LOGGER.info("ConnectionClosed");
+        //LOGGER.info("ConnectionClosed");
         final Long userId = (Long) webSocketSession.getAttributes().get(USER_ID);
         if (userId == null) {
             LOGGER.warn("User disconnected but his session was not found (closeStatus=" + closeStatus + ')');
@@ -135,11 +135,11 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
     @SuppressWarnings("OverlyBroadCatchBlock")
     private void sendIdToClient(@NotNull WebSocketSession session, long id) {
-        LOGGER.info("sendIdToClient, id = " + id + ", session: " + session);
+        //LOGGER.info("sendIdToClient, id = " + id + ", session: " + session);
         final Message message = new Message(Message.INITIALIZE_USER, String.valueOf(id));
         try {
             final String json = objectMapper.writeValueAsString(message);
-            LOGGER.info("sendIdToClient, json: " + json);
+            //LOGGER.info("sendIdToClient, json: " + json);
             session.sendMessage(new TextMessage(json));
         } catch (Exception e) {
             LOGGER.error("Failed to send ID to user");

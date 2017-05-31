@@ -28,7 +28,7 @@ public class GameMessageHandlerContainer implements MessageHandlerContainer {
             throw new HandleException("No handler for message of " + message.getType() + " type");
         }
         messageHandler.handleMessage(message, forUser);
-        LOGGER.info("message handled: type =[" + message.getType() + "], content=[" + message.getData() + ']');
+        //LOGGER.info("message handled: type =[" + message.getType() + "], content=[" + message.getData() + ']');
     }
 
     @Override
