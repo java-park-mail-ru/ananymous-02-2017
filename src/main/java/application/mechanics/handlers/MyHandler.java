@@ -15,7 +15,7 @@ public class MyHandler extends MessageHandler<String> {
 
     @Override
     public void handle(@NotNull String message, long forUser) throws HandleException {
-        //LOGGER.info("MyHandler. " + message);
+        LOGGER.info("MyHandler. " + message);
     }
 
     public MyHandler(@NotNull MessageHandlerContainer messageHandlerContainer) {

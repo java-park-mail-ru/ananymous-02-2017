@@ -80,7 +80,6 @@ public class GameMechanics {
             return false;
         }
         deleted.add(user);
-        LOGGER.info("add user {} to deleted", user);
         return true;
     }
 
@@ -162,11 +161,9 @@ public class GameMechanics {
                 LOGGER.error("Error serializing!");
                 continue;
             }
-            LOGGER.info("users left: {}", jsonArray);
             final Message message = new Message(Message.REMOVE_USER, jsonArray);
             for (GameUser user : session.getPlayers()) {
                 try {
-                    LOGGER.info("send message to user {}: {}", user.getId(), message.toString());
                     remotePointService.sendMessageToUser(user.getId(), message);
                 } catch (IOException e) {
                     LOGGER.error("Error sending info about removing user(-s) to user {}", user.getId());
