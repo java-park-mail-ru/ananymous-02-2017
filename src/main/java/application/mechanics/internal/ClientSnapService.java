@@ -87,7 +87,7 @@ public class ClientSnapService {
             }
             final Coordinates enemyPosition = enemy.getPosition();
             if (enemyPosition == null) {
-                LOGGER.info("FIRING:enemyPosition is null");
+                //LOGGER.info("FIRING:enemyPosition is null");
                 continue;
             }
 
@@ -100,16 +100,16 @@ public class ClientSnapService {
             final double verticalCos = normalizedDirection.verticalCosBetween(userToEnemy);
             final double cos = normalizedDirection.cosBetween(userToEnemy);
 
-            LOGGER.info("FIRING. My id {}, userPosition {}. angles {}. Enemy id {}. EnemyPosition {}. distance {}. cosThreshold {}. cos {}. horizontalCos {}. verticalCos {}",
-                    snap.getId(), userPosition.toString(), camera.toString(), enemy.getId(), enemyPosition.toString(), distance, cosThreshold, cos, horizontalCos, verticalCos);
+            //LOGGER.info("FIRING. My id {}, userPosition {}. angles {}. Enemy id {}. EnemyPosition {}. distance {}. cosThreshold {}. cos {}. horizontalCos {}. verticalCos {}",
+//                    snap.getId(), userPosition.toString(), camera.toString(), enemy.getId(), enemyPosition.toString(), distance, cosThreshold, cos, horizontalCos, verticalCos);
 
 //            if (horizontalCos >= cosThreshold && verticalCos >= cosThreshold) {
             if (cos >= cosThreshold) {
                 if (isWallsOnDistance(userPosition, normalizedDirection, distance)) {
-                    LOGGER.info("Shot in wall");
+                    //LOGGER.info("Shot in wall");
                     continue;
                 }
-                LOGGER.info("Shot in target");
+                //LOGGER.info("Shot in target");
                 final double hypotenuse = distance / cos;
                 final double distanceFromEnemyCenter =
                         Math.sqrt(hypotenuse * hypotenuse - distance * distance);
