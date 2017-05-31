@@ -157,12 +157,11 @@ public class GameMechanics {
                 continue;
             }
 
-            final POJO pojo = new POJO(playersLeft.get(0));
             final String jsonArraySnap;
             final String jsonArray;
             try {
-                jsonArraySnap = objectMapper.writeValueAsString(pojo);
-                jsonArray = objectMapper.writeValueAsString(pojo);
+                jsonArraySnap = objectMapper.writeValueAsString(playersLeft);
+                jsonArray = objectMapper.writeValueAsString(playersLeft);
             }
             catch (JsonProcessingException e) {
                 LOGGER.error("Error serializing!");
@@ -180,14 +179,6 @@ public class GameMechanics {
                     LOGGER.error("Error sending info about removing user(-s) to user {}", user.getId());
                 }
             }
-        }
-    }
-
-    private static class POJO {
-        final long delete;
-
-        public POJO(long delete) {
-            this.delete = delete;
         }
     }
 
