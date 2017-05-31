@@ -4,6 +4,7 @@ import application.mechanics.Config;
 import application.mechanics.base.Block;
 import application.mechanics.base.geometry.Coordinates;
 import application.mechanics.base.Map;
+import application.mechanics.utils.Index;
 import application.mechanics.utils.MapHelper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -40,8 +41,8 @@ public class BlockService {
     }
 
     public boolean isWallsBetween(@NotNull Coordinates from, @NotNull Coordinates to) {
-        final Index fromIndex = getIndexOnMap(from);
-        final Index toIndex = getIndexOnMap(to);
+        final Index fromIndex = MapHelper.getIndex(from);
+        final Index toIndex = MapHelper.getIndex(to);
         LOGGER.info("from: {}, index: {}. to: {}, index: {}", from.toString(), "i " + fromIndex.i + ", j " + fromIndex.j,
                 to.toString(), "i " + toIndex.i + ", j " + toIndex.j);
         final int fromI = Math.min(fromIndex.i, toIndex.i);
@@ -60,19 +61,5 @@ public class BlockService {
             }
         }
         return false;
-    }
-
-    @NotNull
-    private Index getIndexOnMap(@NotNull Coordinates point) {
-        final Index index = new Index();
-        index.i = (int) ((point.x + Config.BLOCK_SIZE / 2) / Config.BLOCK_SIZE) + n / 2;
-        index.j = (int) ((point.z + Config.BLOCK_SIZE / 2) / Config.BLOCK_SIZE) + m / 2;
-        return index;
-    }
-
-    @SuppressWarnings("PublicField")
-    private static class Index {
-        public int i;
-        public int j;
     }
 }
