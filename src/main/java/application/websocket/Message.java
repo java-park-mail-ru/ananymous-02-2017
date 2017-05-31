@@ -8,11 +8,11 @@ import org.jetbrains.annotations.Nullable;
 public class Message {
     // TODO remove this if possible
     @NotNull
-    public static final String INITIALIZE_USER = "InitializePlayer";
+    public static final String INITIALIZE_USER = "Initialize";
     @NotNull
     public static final String SNAPSHOT = "Snapshot";
     @NotNull
-    public static final String REMOVE_USER = "RemovePlayer";
+    public static final String REMOVE_PLAYER = "Remove";
 
     @Nullable
     private String type;
