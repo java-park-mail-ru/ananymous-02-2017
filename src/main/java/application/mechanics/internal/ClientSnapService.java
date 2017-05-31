@@ -105,6 +105,7 @@ public class ClientSnapService {
 
 //            if (horizontalCos >= cosThreshold && verticalCos >= cosThreshold) {
             if (cos >= cosThreshold) {
+                LOGGER.info("enemy position {}", enemyPosition.toString());
                 if (isWallsOnDistance(userPosition, normalizedDirection, distance)) {
                     //LOGGER.info("Shot in wall");
                     continue;
@@ -130,6 +131,7 @@ public class ClientSnapService {
                 from.y + distance * normalizedDirection.getY(),
                 from.z + distance * normalizedDirection.getZ()
         );
+        LOGGER.info("to {}", to.toString());
         return blockService.isWallsBetween(from, to);
     }
 
