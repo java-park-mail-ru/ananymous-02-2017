@@ -1,5 +1,8 @@
 package application.mechanics.utils;
 
+import application.mechanics.GameSession;
+import org.jetbrains.annotations.Nullable;
+
 @SuppressWarnings({"PublicField", "InstanceVariableNamingConvention"})
 public class Index {
     public int i;
@@ -11,5 +14,22 @@ public class Index {
     public Index(int i, int j) {
         this.i = i;
         this.j = j;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Index other = (Index) obj;
+        return other.i == i && other.j == j;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(i) + Integer.hashCode(j);
     }
 }
