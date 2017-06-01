@@ -1,5 +1,7 @@
 package application.mechanics;
 
+import java.util.concurrent.TimeUnit;
+
 public class Config {
     public static final long STEP_TIME = 30;
     public static final int THREADS_NUM = Runtime.getRuntime().availableProcessors();
@@ -16,4 +18,6 @@ public class Config {
     public static final int SCORES_FOR_SHOT = 2;
     public static final int SCORES_FOR_KILL = 10;
     public static final double DAMAGE_COEFF_MIN = 0.5;
+
+    public static final long SESSION_TIME_NANOS = TimeUnit.SECONDS.toNanos(30);
 }

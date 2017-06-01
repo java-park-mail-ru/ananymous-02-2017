@@ -12,13 +12,17 @@ import java.util.concurrent.atomic.AtomicLong;
 public class GameSession {
     @NotNull
     private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
+
     @NotNull
     private final Long sessionId;
     @NotNull
     private final Set<GameUser> players = new HashSet<>();
 
+    private final long startTime;
+
     public GameSession() {
         this.sessionId = ID_GENERATOR.getAndIncrement();
+        startTime = System.nanoTime();
     }
 
     public boolean isFull() {
@@ -43,6 +47,10 @@ public class GameSession {
                 break;
             }
         }
+    }
+
+    public boolean isTimeOver(long nanos) {
+        return nanos - startTime >= Config.SESSION_TIME_NANOS;
     }
 
     @NotNull

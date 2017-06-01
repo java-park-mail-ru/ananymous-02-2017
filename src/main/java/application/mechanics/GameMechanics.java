@@ -136,6 +136,13 @@ public class GameMechanics {
         }
 
         clientSnapshotsService.clear();
+
+        final long currentTime = System.nanoTime();
+        for (GameSession session : gameSessionService.getSessions()) {
+            if (session.isTimeOver(currentTime)) {
+                gameSessionService.notifyGameIsOver(session);
+            }
+        }
     }
 
     private void removeLeftUsers() {

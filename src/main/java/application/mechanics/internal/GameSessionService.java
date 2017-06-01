@@ -53,12 +53,12 @@ public class GameSessionService {
         return usersMap.containsKey(userId);
     }
 
-    public void addNewPlayer (User user) {
+    public void addNewPlayer(@NotNull User user) {
         for (GameSession session: gameSessions) {
             if (!session.isFull()) {
                 session.addPlayer(user);
                 usersMap.put(user.getId(), session);
-                //LOGGER.info("Added player #{} to room #{} (players here: {})", user.getId(), session.getId(), session.getPlayers().size());
+                LOGGER.info("Added player #{} to room #{} (players here: {})", user.getId(), session.getId(), session.getPlayers().size());
                 return;
             }
         }
@@ -67,7 +67,7 @@ public class GameSessionService {
         newSession.addPlayer(user);
         gameSessions.add(newSession);
         usersMap.put(user.getId(), newSession);
-        //LOGGER.info("Started new room #{}, total rooms: {}", newSession.getId(), gameSessions.size());
+        LOGGER.info("Started new room #{}, total rooms: {}", newSession.getId(), gameSessions.size());
     }
 
 
