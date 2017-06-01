@@ -2,7 +2,6 @@
 
 # Команда
 * Перескоков Владислав
-* Артюхов Владислав
 * Набоков Денис
 
 # [Application](https://ananymous.herokuapp.com)  
