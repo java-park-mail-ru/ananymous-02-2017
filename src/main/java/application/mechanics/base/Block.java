@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"UnnecessaryLocalVariable", "OverlyComplexBooleanExpression"})
 public class Block {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(Block.class.getSimpleName());
-
-    @NotNull
     private Coordinates corner;
     private double xLength;
     private double yLength;
@@ -49,8 +46,6 @@ public class Block {
         final double x = planeX;
         final double y = dy * t + from.y;
         final double z = dz * t + from.z;
-
-        LOGGER.info("planeX {}, dx {}, from.x {}", planeX, dx, from.x);
 
         if (dx >= 0 && x < from.x || dx < 0 && x > from.x) {
             return null;
@@ -103,15 +98,11 @@ public class Block {
         final boolean isXInside = point.x >= corner.x && point.x <= corner.x + xLength;
         final boolean isYInside = point.y >= corner.y && point.y <= corner.y + yLength;
         final boolean isZInside = point.z >= corner.z && point.z <= corner.z + zLength;
-        LOGGER.info("isXInside {}, isYInside {}, isZInside {}", isXInside, isYInside, isZInside);
         return isXInside && isYInside && isZInside;
     }
 
     public boolean isBetween(@NotNull Coordinates from, @NotNull Coordinates to) {
         final Coordinates intersectionX = getIntersectionPointWithX(from, to);
-        if (intersectionX != null) {
-            LOGGER.info("intersectionX {}", intersectionX.toString());
-        }
         final Coordinates intersectionY = getIntersectionPointWithY(from, to);
         final Coordinates intersectionZ = getIntersectionPointWithZ(from, to);
         final boolean isContainX = isBlockContains(intersectionX);
