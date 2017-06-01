@@ -30,7 +30,7 @@ public class BlockService {
                 if (Map.MAP[i][j] > 0) {
                     final Coordinates corner = new Coordinates(
                             i * Config.BLOCK_SIZE - MapHelper.X_OFFSET,
-                            Config.BLOCK_HEIGHT,
+                            0,
                             j * Config.BLOCK_SIZE - MapHelper.Z_OFFSET
                     );
                     final Block block = new Block(corner, Config.BLOCK_SIZE, Config.BLOCK_HEIGHT, Config.BLOCK_SIZE);
