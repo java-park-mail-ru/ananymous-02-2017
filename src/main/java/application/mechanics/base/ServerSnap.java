@@ -16,7 +16,6 @@ public class ServerSnap {
     private int kills;
     private int deaths;
 
-
     public ServerSnap(@NotNull List<ServerPlayerSnap> players, long timeLeft) {
         this.players = players;
         this.timeLeft = timeLeft;
@@ -32,6 +31,10 @@ public class ServerSnap {
     @NotNull
     public List<ServerPlayerSnap> getPlayers() {
         return players;
+    }
+
+    public long getTimeLeft() {
+        return timeLeft;
     }
 
     public boolean isShot() {

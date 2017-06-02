@@ -15,9 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class Application {
-    public static final long IDLE_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(1);
-    public static final int BUFFER_SIZE_BYTES = 8192;
-
     public static void main(String[] args) {
         SpringApplication.run(new Object[]{WebSocketConfig.class, Application.class}, args);
     }
@@ -31,17 +28,6 @@ public class Application {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
-    // TODO check if needed
-//    @Bean
-//    public DefaultHandshakeHandler handshakeHandler() {
-//        final WebSocketPolicy policy = new WebSocketPolicy(WebSocketBehavior.SERVER);
-//        policy.setInputBufferSize(BUFFER_SIZE_BYTES);
-//        policy.setIdleTimeout(IDLE_TIMEOUT_MS);
-//
-//        return new DefaultHandshakeHandler(
-//                new JettyRequestUpgradeStrategy(new WebSocketServerFactory(policy)));
-//    }
 
     @Bean
     public WebSocketHandler gameWebSocketHandler() {

@@ -1,6 +1,6 @@
 package application.mechanics.base;
 
-@SuppressWarnings({"ClassNamingConvention", "PublicField", "StaticVariableNamingConvention"})
+@SuppressWarnings({"ClassNamingConvention", "PublicField", "StaticVariableNamingConvention", "ConstantNamingConvention"})
 public final class Map {
     public static final int[][] MAP = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},

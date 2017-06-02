@@ -125,11 +125,10 @@ public class MechanicsExecutor {
 
         @Override
         public void run() {
-            long lastFrameMillis = Config.STEP_TIME;
             while (true) {
                 final long before = clock.millis();
 
-                gameMechanics.gmStep(lastFrameMillis);
+                gameMechanics.gmStep();
 
                 final long after = clock.millis();
                 TimeHelper.sleep(Config.STEP_TIME - (after - before));
@@ -138,8 +137,6 @@ public class MechanicsExecutor {
                     gameMechanics.reset();
                     return;
                 }
-                final long afterSleep = clock.millis();
-                lastFrameMillis = afterSleep - before;
             }
         }
     }

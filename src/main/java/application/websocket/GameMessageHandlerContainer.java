@@ -11,8 +11,6 @@ import java.util.Map;
 @Service
 public class GameMessageHandlerContainer implements MessageHandlerContainer {
     @NotNull
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameMessageHandlerContainer.class.getSimpleName());
-
     final Map<Class<?>, MessageHandler<?>> handlerMap = new HashMap<>();
 
     @Override
@@ -28,7 +26,6 @@ public class GameMessageHandlerContainer implements MessageHandlerContainer {
             throw new HandleException("No handler for message of " + message.getType() + " type");
         }
         messageHandler.handleMessage(message, forUser);
-        //LOGGER.info("message handled: type =[" + message.getType() + "], content=[" + message.getData() + ']');
     }
 
     @Override

@@ -35,11 +35,9 @@ public class RemotePointService {
         return sessions.containsKey(userId) && sessions.get(userId).isOpen();
     }
 
-    // TODO check if nullable
-    @NotNull
-    public WebSocketSession removeUser(long userId)
+    public void removeUser(long userId)
     {
-        return sessions.remove(userId);
+        sessions.remove(userId);
     }
 
     public void cutDownConnection(long userId, @NotNull CloseStatus closeStatus) {

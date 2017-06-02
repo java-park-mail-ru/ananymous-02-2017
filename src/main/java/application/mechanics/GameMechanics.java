@@ -88,16 +88,12 @@ public class GameMechanics {
         return gameSessionService.isPlaying(user);
     }
 
-    public GameSession getSessionForUser(long user) {
-        return gameSessionService.getSessionForUser(user);
-    }
-
     private boolean insureCandidate(long candidate) {
         return remotePointService.isConnected(candidate) &&
                 accountService.getUser(candidate) != null;
     }
 
-    public void gmStep(long frameTime) {
+    public void gmStep() {
         while (!tasks.isEmpty()) {
             final Runnable nextTask = tasks.poll();
             try {
@@ -174,8 +170,6 @@ public class GameMechanics {
             final Message message = new Message(Message.REMOVE_PLAYER, jsonArray);
             for (GameUser user : session.getPlayers()) {
                 try {
-                    LOGGER.info("send message to user {}. message: type: {}, data: {}",
-                            user.getId(), message.getType(), message.getData());
                     remotePointService.sendMessageToUser(user.getId(), message);
                 } catch (IOException e) {
                     LOGGER.error("Error sending info about removing user(-s) to user {}", user.getId());

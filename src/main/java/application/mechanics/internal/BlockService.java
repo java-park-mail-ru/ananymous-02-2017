@@ -12,13 +12,11 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings("InstanceVariableNamingConvention")
 @Service
 public class BlockService {
-    private final int m;
-    private final int n;
     private final Block[][] blocks;
 
     public BlockService() {
-        m = Map.M;
-        n = Map.N;
+        final int m = Map.M;
+        final int n = Map.N;
         blocks = new Block[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {

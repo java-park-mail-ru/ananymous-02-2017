@@ -9,7 +9,6 @@ public class VictimModel {
 
     // TODO check
     public VictimModel() {
-
     }
 
     public VictimModel(long id, @NotNull String login) {

@@ -77,7 +77,7 @@ public class GameSessionService {
         }
         usersMap.remove(userId);
         session.removePlayer(userId);
-        //LOGGER.info("Player #{} was removed from room #{} (players here: {})", userId, session.getId(), session.getPlayers().size());
+        LOGGER.info("Player #{} was removed from room #{} (players here: {})", userId, session.getId(), session.getPlayers().size());
         if (session.isEmpty()) {
             notifyGameIsOver(session, CloseStatus.NORMAL);
         }
@@ -92,6 +92,6 @@ public class GameSessionService {
                 remotePointService.cutDownConnection(player.getId(), closeStatus);
             }
         }
-        //LOGGER.info("Game #{} is over, total rooms: {}", gameSession.getId(), gameSessions.size());
+        LOGGER.info("Game #{} is over, total rooms: {}", gameSession.getId(), gameSessions.size());
     }
 }

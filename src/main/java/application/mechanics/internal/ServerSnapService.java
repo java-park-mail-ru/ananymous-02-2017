@@ -49,6 +49,7 @@ public class ServerSnapService {
                 snap.setPlayer(player);
 
                 message.setData(objectMapper.writeValueAsString(snap));
+                // TODO REMOVE LOG
                 LOGGER.info("send message to user {}: {}", player.getId(), message.getData());
                 remotePointService.sendMessageToUser(player.getId(), message);
                 player.resetForNextSnap();

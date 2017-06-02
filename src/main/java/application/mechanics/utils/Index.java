@@ -1,8 +1,5 @@
 package application.mechanics.utils;
 
-import application.mechanics.GameSession;
-import org.jetbrains.annotations.Nullable;
-
 @SuppressWarnings({"PublicField", "InstanceVariableNamingConvention"})
 public class Index {
     public int i;
