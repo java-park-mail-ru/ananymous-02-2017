@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class GameSession {
@@ -49,8 +50,12 @@ public class GameSession {
         }
     }
 
-    public boolean isTimeOver(long nanos) {
-        return nanos - startTime >= Config.SESSION_TIME_NANOS;
+    public long getRemainingSeconds(long nanos) {
+        long diff = (nanos - startTime) - Config.SESSION_TIME_NANOS;
+        if (diff < 0) {
+            diff = 0;
+        }
+        return TimeUnit.NANOSECONDS.toSeconds(diff);
     }
 
     @NotNull

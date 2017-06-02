@@ -32,7 +32,7 @@ public class ServerSnapService {
         this.remotePointService = remotePointService;
     }
 
-    public void sendSnapshotsFor(@NotNull GameSession gameSession, long currentTime) {
+    public void sendSnapshotsFor(@NotNull GameSession gameSession, long secondsLeft) {
         final Collection<GameUser> players = gameSession.getPlayers();
         final List<ServerPlayerSnap> playersSnaps = players.stream()
                 .map(GameUser::generateSnap).collect(Collectors.toList());
@@ -41,9 +41,7 @@ public class ServerSnapService {
             throw new RuntimeException("No players snaps");
         }
 
-
-
-        final ServerSnap snap = new ServerSnap(playersSnaps);
+        final ServerSnap snap = new ServerSnap(playersSnaps, secondsLeft);
         try {
             final Message message = new Message();
             message.setType(Message.SNAPSHOT);
@@ -51,7 +49,7 @@ public class ServerSnapService {
                 snap.setPlayer(player);
 
                 message.setData(objectMapper.writeValueAsString(snap));
-                //LOGGER.info("send message to user {}: {}", player.getId(), message.getData());
+                LOGGER.info("send message to user {}: {}", player.getId(), message.getData());
                 remotePointService.sendMessageToUser(player.getId(), message);
                 player.resetForNextSnap();
             }

@@ -116,8 +116,13 @@ public class GameMechanics {
         final Collection<GameSession> sessionsToTerminate = new ArrayList<>();
         while (iterator.hasNext()) {
             final GameSession session = iterator.next();
+            final long secondsLeft = session.getRemainingSeconds(currentTime);
+            if (secondsLeft == 0) {
+                gameSessionService.notifyGameIsOver(session, CloseStatus.NORMAL);
+                continue;
+            }
             try {
-                serverSnapshotService.sendSnapshotsFor(session, currentTime);
+                serverSnapshotService.sendSnapshotsFor(session, secondsLeft);
             } catch (RuntimeException ex) {
                 sessionsToTerminate.add(session);
                 LOGGER.error("Session was terminated!");
@@ -137,12 +142,6 @@ public class GameMechanics {
         }
 
         clientSnapshotsService.clear();
-
-        for (GameSession session : gameSessionService.getSessions()) {
-            if (session.isTimeOver(currentTime)) {
-                gameSessionService.notifyGameIsOver(session, CloseStatus.NORMAL);
-            }
-        }
     }
 
     private void removeLeftUsers() {
