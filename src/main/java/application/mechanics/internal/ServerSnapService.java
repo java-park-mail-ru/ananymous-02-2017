@@ -48,14 +48,7 @@ public class ServerSnapService {
             for (GameUser player : players) {
                 snap.setPlayer(player);
 
-                LOGGER.info("try to parse ServerSnap");
-                try {
-                    message.setData(objectMapper.writeValueAsString(snap));
-                } catch (JsonProcessingException e) {
-                    LOGGER.error("Error parsing ServerSnap", e);
-                }
-                // TODO REMOVE LOG
-                LOGGER.info("send message to user {}: {}", player.getId(), message.getData());
+                message.setData(objectMapper.writeValueAsString(snap));
                 remotePointService.sendMessageToUser(player.getId(), message);
                 player.resetForNextSnap();
             }
