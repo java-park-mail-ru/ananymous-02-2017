@@ -19,5 +19,5 @@ public class Config {
     public static final int SCORES_FOR_KILL = 10;
     public static final double DAMAGE_COEFF_MIN = 0.5;
 
-    public static final long SESSION_TIME_NANOS = TimeUnit.SECONDS.toNanos(30);
+    public static final long SESSION_TIME_NANOS = TimeUnit.MINUTES.toNanos(10);
 }
