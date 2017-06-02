@@ -51,7 +51,7 @@ public class GameSession {
     }
 
     public long getRemainingSeconds(long nanos) {
-        long diff = (nanos - startTime) - Config.SESSION_TIME_NANOS;
+        long diff = Config.SESSION_TIME_NANOS - (nanos - startTime);
         if (diff < 0) {
             diff = 0;
         }
