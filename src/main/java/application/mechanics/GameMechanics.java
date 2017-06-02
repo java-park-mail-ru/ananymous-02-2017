@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.CloseStatus;
 
 import java.io.IOException;
 import java.util.*;
@@ -110,18 +111,18 @@ public class GameMechanics {
             clientSnapshotsService.processSnapshotsFor(session);
         }
 
-
+        final long currentTime = System.nanoTime();
         final Iterator<GameSession> iterator = gameSessionService.getSessions().iterator();
         final Collection<GameSession> sessionsToTerminate = new ArrayList<>();
         while (iterator.hasNext()) {
             final GameSession session = iterator.next();
             try {
-                serverSnapshotService.sendSnapshotsFor(session);
+                serverSnapshotService.sendSnapshotsFor(session, currentTime);
             } catch (RuntimeException ex) {
                 sessionsToTerminate.add(session);
                 LOGGER.error("Session was terminated!");
             }
-            sessionsToTerminate.forEach(gameSessionService::notifyGameIsOver);
+            sessionsToTerminate.forEach((s) -> gameSessionService.notifyGameIsOver(s, CloseStatus.SERVER_ERROR));
         }
 
         removeLeftUsers();
@@ -137,10 +138,9 @@ public class GameMechanics {
 
         clientSnapshotsService.clear();
 
-        final long currentTime = System.nanoTime();
         for (GameSession session : gameSessionService.getSessions()) {
             if (session.isTimeOver(currentTime)) {
-                gameSessionService.notifyGameIsOver(session);
+                gameSessionService.notifyGameIsOver(session, CloseStatus.NORMAL);
             }
         }
     }
@@ -188,7 +188,7 @@ public class GameMechanics {
     public void reset() {
         final Set<GameSession> sessions = gameSessionService.getSessions();
         for (GameSession session: sessions) {
-            gameSessionService.notifyGameIsOver(session);
+            gameSessionService.notifyGameIsOver(session, CloseStatus.SERVER_ERROR);
         }
     }
 }

@@ -79,17 +79,17 @@ public class GameSessionService {
         session.removePlayer(userId);
         //LOGGER.info("Player #{} was removed from room #{} (players here: {})", userId, session.getId(), session.getPlayers().size());
         if (session.isEmpty()) {
-            notifyGameIsOver(session);
+            notifyGameIsOver(session, CloseStatus.NORMAL);
         }
     }
 
-    public void notifyGameIsOver(GameSession gameSession) {
+    public void notifyGameIsOver(@NotNull GameSession gameSession, @NotNull CloseStatus closeStatus) {
         final boolean exists = gameSessions.remove(gameSession);
         final Set<GameUser> players = gameSession.getPlayers();
         for (GameUser player: players) {
             usersMap.remove(player.getId());
             if (exists) {
-                remotePointService.cutDownConnection(player.getId(), CloseStatus.SERVER_ERROR);
+                remotePointService.cutDownConnection(player.getId(), closeStatus);
             }
         }
         //LOGGER.info("Game #{} is over, total rooms: {}", gameSession.getId(), gameSessions.size());
